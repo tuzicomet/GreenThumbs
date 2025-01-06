@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="#{profile.title}"></title>
+    <link th:href="@{/css/baseApplicationStyle.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/profile.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/tooltip.css}" rel="stylesheet" type="text/css"/>
+    <th:block th:insert="~{fragments/navbar.html :: headerfiles}"></th:block>
+    <script th:src="@{/js/UserForms_ToggleLastName.js}"></script>
+    <script th:src="@{/js/AllForms_ChangeValidityStyles.js}"></script>
+    <script th:src="@{/js/User_ValidateDetails.js}"></script>
+    <script th:inline="javascript">
+        window.onload = () => {
+            toggleLastNameField();
+            validateAll();
+            showAllErrors();
+        }
+    </script>
+</head>
+<body>
+<div>
+    <header th:insert="~{fragments/navbar.html :: navbar}"></header>
+</div>
+<div id="center-div">
+    <div class="container">
+        <div th:if="${user}">
+            <!-- Elements to show on the user details page (when not editing the user) -->
+            <div id="profile" th:if="${!edit}">
+                <form th:action="@{/profile}">
+
+                    <div id="profile-picture-section" class="tooltip">
+                        <span th:if="${isViewedUserContractor}" id="tooltipFlairId" class="tooltiptext" th:text="${flairToolTip}"></span>
+
+                        <img th:if="${isViewedUserContractor}" class="contractor-flair" th:src="@{${contractorFlair}}" th:alt="#{alt.contractorFlair}" />
+                        <img class="profile-picture" th:src="@{${user.profilePicture}}" th:alt="#{alt.profilePicture}" />
+                    </div>
+
+                    <span th:text="#{label.name} + ' '"></span>
+                    <span th:text="${user.getFormattedName()}"></span><br>
+                    <span th:text="#{label.email} + ' '"></span>
+                    <span th:text="${user.email}"></span><br>
+                    <th:block th:if="${user.dateOfBirth != null}">
+                        <span th:text="#{label.dateOfBirth} + ' '"></span>
+                        <span th:text="${user.dateOfBirth}"></span><br>
+                    </th:block>
+                    <!-- Only show edit button if user is authenticated -->
+                    <div th:if="${authenticatedAsUser}" id="buttons">
+                        <button type="submit" name="edit" class="button-common" value="true"
+                                th:text="#{message.edit} + ' '"></button>
+                        <a th:if="${isUser}" class="link-button-green" th:href="@{/profile/contractor}"
+                           th:text="#{contractor.register}"></a>
+                    </div>
+                </form>
+
+                <!-- Only show edit profile picture form if user is authenticated -->
+                <div th:if="${authenticatedAsUser}">
+                    <form id="profilePictureForm" th:action="@{/profile}" method="post" enctype="multipart/form-data">
+                        <div class="file-upload-wrapper">
+                            <input type="file" id="file" name="file" class="file-upload-input" accept="image/*" onchange="this.form.submit();" required />
+                            <label for="file" class="file-upload-button"
+                                   th:text="#{profile.editPicture}"></label>
+                            <div th:if="${error}" class="alert alert-danger" role="alert">
+                                <p th:text="${error}"></p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Elements to show on the edit profile page -->
+            <div id="edit" th:if="${edit}">
+
+                <!-- Form for editing user information -->
+                <form id="editUserForm" th:action="@{/profile}" method="post" novalidate>
+                    <img th:src="@{${user.profilePicture}}" th:alt="#{alt.profilePicturePreview}" />
+                    <label for="firstName" th:text="#{label.firstName}"></label>
+                    <input type="text" id="firstName" th:name="firstName" th:value="${firstName}" autofocus oninput="validateFirstName();removeErrorPopUp(this);"  onclick="removeErrorPopUp(this)"/>
+
+                    <!-- Last Name label and input field -->
+                    <label for="lastName" th:text="#{label.lastName}"></label>
+                    <input type="text" id="lastName" th:name="lastName" th:value="${lastName}"
+                           oninput="validateLastName()"  onfocus="removeErrorPopUp(this)"
+                           onclick="removeErrorPopUp(this)"/>
+
+                    <!-- No surname checkbox and text -->
+                    <label>
+                        <input type="checkbox" id="noSurname" th:name="noSurname" th:checked="${noSurname}" onfocus="removeErrorPopUp(this)" onclick="toggleLastNameField()"
+                               th:text="' ' + #{message.noSurname}"/>
+                    </label>
+                    <br>
+
+                    <!-- Email label and input field -->
+                    <label for="email" th:text="#{label.email}"></label>
+                    <input type="text" id="email" th:name="email" th:value="${email}"
+                           oninput="validateEmail()" onfocus="removeErrorPopUp(this)"
+                           onclick="removeErrorPopUp(this)" />
+
+                    <!-- Date of Birth label and input field -->
+                    <label for="dateOfBirth" th:text="#{label.dateOfBirth}"></label>
+                    <input type="text" id="dateOfBirth" name="dateOfBirth" th:value="${dateOfBirth}"
+                           th:placeholder="#{placeholder.dateFormatPlaceHolder}"
+                           maxlength="10"
+                           oninput="validateDateOfBirth()"
+                           onfocus="removeErrorPopUp(this)" onclick="removeErrorPopUp(this)" />
+
+                    <div class="form-buttons">
+                        <input id="submit" type="submit" name="submit" th:value="#{button.submit}" class="button-common" />
+                        <a id="cancel" th:href="@{/profile}" class="button-common link-button-red"
+                           th:text="#{button.cancel}"></a>
+                    </div>
+
+                    <div class="form-buttons-row">
+                        <a class="link-button-green" th:href="@{/editpassword}"
+                           th:text="#{button.changePassword}"></a>
+                    </div>
+
+                    <!-- HiddenInputs so we can use the error messages in JavaScript -->
+                    <input type="hidden" id="firstNameError" th:value="${firstNameError}">
+                    <input type="hidden" id="lastNameError" th:value="${lastNameError}">
+                    <input type="hidden" id="emailError" th:value="${emailError}">
+                    <input type="hidden" id="dobError" th:value="${dobError}">
+                </form>
+
+                <!-- Form for editing user profile picture -->
+                <form id="editProfilePictureForm" th:action="@{/profile}" method="post" enctype="multipart/form-data" onsubmit="validateProfileImage()">
+                    <div class="file-upload-wrapper">
+                        <input type="file" id="file1" name="file" class="file-upload-input" accept="image/*" onchange="this.form.submit();" required />
+                        <label for="file" class="file-upload-button"
+                               th:text="#{profile.editPicture}"></label>
+                        <div id="image-error"></div>
+                        <div th:if="${error}" class="alert alert-danger" role="alert">
+                            <p th:text="${error}"></p>
+                        </div>
+                    </div>
+                </form>
+
+
+                <script th:src="@{/js/FormInputs_HandleEnterKey.js}"></script>
+            </div>
+        </div>
+
+
+        <div th:unless="${user}">
+            <p th:text="#{message.userNotFound}"></p>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/ValidateProfileImage.js}"></script>
+</body>
+
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <title th:text="#{newServiceRequest.title}"></title>
+  <link th:href="@{/css/baseApplicationStyle.css}" rel="stylesheet" type="text/css"/>
+  <link th:href="@{/css/newServiceRequest.css}" rel="stylesheet" type="text/css"/>
+  <link th:href="@{/css/imageField.css}" rel="stylesheet" type="text/css"/>
+  <th:block th:insert="~{fragments/navbar.html :: headerfiles}"></th:block>
+</head>
+<body>
+<div>
+  <header th:insert="~{fragments/navbar.html :: navbar}"></header>
+</div>
+
+<div id="center-div">
+  <!-- Service request form-->
+  <div class="container" id="request-form">
+    <form th:action="@{/newServiceRequest}" method="post" enctype="multipart/form-data" novalidate>
+      <h2 class="form-header" th:text="#{newServiceRequest.header}"></h2>
+
+      <label for="title" th:text="#{label.title}"></label>
+      <input type="text" class="form-control" id="title" name="title" maxlength="32"
+             th:value="${title}" th:placeholder="#{placeholder.titlePlaceholder}"
+             onfocus="removeErrorPopUp(this)" onclick="removeErrorPopUp(this)"
+      >
+      <label for="description" th:text="#{label.description}"></label>
+      <input type="text" class="form-control" id="description" name="description" maxlength="512"
+             th:value="${description}" th:placeholder="#{placeholder.descriptionPlaceholder}"
+             onfocus="removeErrorPopUp(this)" onclick="removeErrorPopUp(this)"
+      >
+
+      <label for="garden" th:text="#{newServiceRequest.chooseGarden}"></label>
+      <select name="garden" id="garden" th:value="${gardenId}"
+              onfocus="removeErrorPopUp(this)" onclick="removeErrorPopUp(this)" onchange="setStyleValid(this); document.getElementById('errorGarden').value = ''"
+              th:disabled="${#lists.isEmpty(gardens)}">
+        <option disabled selected value th:if="${#lists.isEmpty(gardens)}" th:text="#{error.noPublicGardens}">
+        </option>
+        <option disabled selected value th:unless="${#lists.isEmpty(gardens)}" th:text="#{newServiceRequest.garden}">
+        </option>
+        <option th:each="garden_slay : ${gardens}"
+                th:selected="${garden_slay.id == gardenId}"
+                th:text="${garden_slay.name}"
+                th:value="${garden_slay.id}"></option>
+      </select>
+      <label for="dateMin" th:text="#{newServiceRequest.earliestDate}"></label>
+      <input type="text" class="form-control" id="dateMin" name="dateMin" maxlength="20"
+             th:value="${dateMin}" th:placeholder="#{placeholder.dateFormatPlaceHolder}"
+             onfocus="removeErrorPopUp(this)" onclick="removeErrorPopUp(this)"
+      >
+      <label for="dateMax" th:text="#{newServiceRequest.latestDate}"></label>
+      <input type="text" class="form-control" id="dateMax" name="dateMax" maxlength="20"
+             th:value="${dateMax}" th:placeholder="#{placeholder.dateFormatPlaceHolder}"
+             onfocus="removeErrorPopUp(this)" onclick="removeErrorPopUp(this)"
+      >
+
+      <!-- Price Range label and fields -->
+      <label for="priceMin" th:text="#{label.priceRangeNZD}"></label>
+      <div class="price-range-container">
+        <input type="text" class="form-control" id="priceMin" name="priceMin"
+               th:value="${priceMin}" th:placeholder="#{placeholder.min}" maxlength="200"
+               onfocus="removeErrorPopUp(this)" onclick="removeErrorPopUp(this)"
+        >
+        <span class="dash">-</span> <!-- Dash character in-between the fields -->
+        <input type="text" class="form-control" id="priceMax" name="priceMax"
+               th:value="${priceMax}" th:placeholder="#{placeholder.max}" maxlength="200"
+               onfocus="removeErrorPopUp(this)" onclick="removeErrorPopUp(this)"
+        >
+      </div>
+
+      <!-- Plant image section -->
+      <label for="image-select-listener" th:text="#{label.image}"></label>
+
+      <div>
+        <!-- Preview image -->
+        <img class="contain" id="image-select-display" th:src="@{${imagePath}}" alt="Service request image"/><br>
+        <!-- Button for selecting the image. Clicks the hidden image input -->
+        <button type="button" id="image-button" class="button-common image-button" onclick="document.getElementById('image-select-listener').click()" th:text="#{button.addImage}"></button>
+        <!-- hidden image input -->
+        <input type="file" name="image" class="semi-transparent-button-listener"
+               id="image-select-listener" style="display: none;">
+        <input type="hidden" name="imagePath" th:value="${imagePath}">
+      </div>
+
+      <br>
+      <!-- Submit & cancel buttons-->
+      <div class="form-buttons">
+        <input type="submit" id="submit" name="submit" class="button-common"
+               th:value="#{button.requestService}"
+        />
+        <a id="cancel" th:href="@{/myServiceRequests}" class="button-common link-button-red"
+           th:text="#{button.cancel}">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+<script th:src="@{/js/User_ValidateDetails.js}"></script>
+<script th:src="@{/js/FormInputs_HandleEnterKey.js}"></script>
+
+<!-- HiddenInputs so we can use the error messages in JavaScript -->
+<input type="hidden" id="errorTitle" th:value="${errorTitle}">
+<input type="hidden" id="errorDescription" th:value="${errorDescription}">
+<input type="hidden" id="errorDateMin" th:value="${errorDateMin}">
+<input type="hidden" id="errorDateMax" th:value="${errorDateMax}">
+<input type="hidden" id="errorPriceMin" th:value="${errorPriceMin}">
+<input type="hidden" id="errorPriceMax" th:value="${errorPriceMax}">
+<input type="hidden" id="errorGarden" th:value="${errorGarden}">
+<input type="hidden" id="errorImage" th:value="${errorImage}">
+<input type="hidden" id="image-too-large-error-front-end" th:value="${frontEndErrorImageTooLarge}">
+<input type="hidden" id="image-format-error-front-end" th:value="${frontEndErrorImageFormat}">
+
+<script th:src="@{/js/AllForms_ChangeValidityStyles.js}"></script>
+<script th:src="@{/js/ServiceRequest_ValidateDetails.js}"></script>
+<script th:src="@{/js/DisableSubmitOnSubmit.js}"></script>
+<script>
+  validateAllRequestFields();
+  showAllRequestErrors();
+</script>
+<script th:src="@{/js/NewServiceRequest_ValidateImage.js}"></script>
+</body>
+
+</html>

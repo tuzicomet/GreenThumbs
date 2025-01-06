@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+    <title th:text="#{addGarden.title}"></title>
+    <link th:href="@{/css/baseApplicationStyle.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/gardenFormStyle.css}" rel="stylesheet">
+    <link th:href="@{/css/addressAutocomplete.css}" rel="stylesheet" type="text/css">
+    <th:block th:insert="~{fragments/navbar.html :: headerfiles}"></th:block>
+    <script th:src="@{/js/AllForms_ChangeValidityStyles.js}"></script>
+    <script th:src="@{/js/Garden_ValidateDetails.js}"></script>
+    <script th:src="@{/js/GardenForms_CharacterCount.js}"></script>
+    <script>
+        window.onload = () =>{
+            validateAllGarden();
+            showAllGardenErrors();
+        }
+    </script>
+</head>
+<body>
+<header th:insert="~{fragments/navbar.html :: navbar}"></header>
+    <div class="form-container">
+        <form th:action="@{/garden}" method="post" class="flex-container" id="form">
+
+            <!--The error below is from a redirection when a user attempts to access another user's garden-->
+            <div th:if="${gardenViewError}" class="error" role="alert">
+                <p th:text="${gardenViewError}"></p>
+            </div>
+            <br>
+
+            <h2 th:text="#{addGarden.header}"></h2>
+
+            <label id='name-label' for="name" th:text="#{label.name}"></label>
+            <input type="text" class="form-control" id="name" th:name="name" th:value="*{name}"
+                   th:placeholder="#{gardenForm.namePlaceholder}" data-cy="name" maxlength="512"
+                   autofocus oninput="removeErrorPopUp(this);validateGardenName()">
+
+
+            <div class="autocomplete-container" id="autocomplete-container">
+
+                <!-- Location input field and label -->
+                <div class="location-suggestion-field" id="location-suggestion-field">
+                    <label id='location-label' for='location' th:text="#{label.gardenLocation}"></label>
+                    <input type="text" class="form-control" id="location" th:placeholder="#{gardenForm.locationPlaceholder}"
+                           th:name="location" th:value="*{location}"
+                           data-cy="location" maxlength="256">
+                    <div id="autocomplete-items" class="autocomplete-items">
+
+                    </div>
+                </div>
+
+                <span class="validity"></span>
+
+                <!-- Additional location fields -->
+                <div class="manual-address-field" id="manual-address-field">
+
+                    <!-- Useful resources for location/address form design:
+                    https://ux.shopify.com/designing-address-forms-for-everyone-everywhere-f481f6baf513
+                    https://www.nzpost.co.nz/sites/nz/files/2021-10/adv356-address-and-layout-guide-aug-2021.pdf-->
+
+                    <div class="street-group">
+                        <label id="street-label" for="street" th:text="#{label.street}"></label>
+                        <input type="text" class="form-control" id="street" th:name="street" th:value="*{street}"
+                               oninput="validateLocationField(this, false)" onfocus="removeErrorPopUp(this)" maxlength="256">
+                    </div>
+
+                    <div class="suburb-group">
+                        <label id="suburb-label" for="suburb" th:text="#{label.suburb}"></label>
+                        <input type="text" class="form-control" id="suburb" th:name="suburb" th:value="*{suburb}"
+                               oninput="validateLocationField(this, false)" onfocus="removeErrorPopUp(this)" maxlength="256">
+                    </div>
+
+                    <div class="city-group">
+                        <label id="city-label" for="city" th:text="#{label.cityRequired}"></label>
+                        <input type="text" class="form-control" id="city" th:name="city" th:value="*{city}"
+                               oninput="validateLocationField(this, true)" onfocus="removeErrorPopUp(this)" maxlength="256">
+                    </div>
+
+                    <div class="postcode-group">
+                        <!-- ZIP/Postal Code works as a generic name. Specific terminology depends on locale -->
+                        <label id="postcode-label" for="postcode" th:text="#{label.postcode}"></label>
+                        <input type="text" class="form-control" id="postcode" th:name="postcode" th:value="*{postcode}"
+                               oninput="validateLocationPostcode(this)" onfocus="removeErrorPopUp(this)" maxlength="64">
+                    </div>
+
+                    <div class="country-group">
+                        <label id="country-label" for="country" th:text="#{label.countryRequired}"></label>
+                        <input type="text" class="form-control" id="country" th:name="country" th:value="*{country}"
+                               oninput="validateLocationField(this, true)" onfocus="removeErrorPopUp(this)" maxlength="256">
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Size input field and label -->
+            <label for="size" th:text="#{label.gardenSize}"></label>
+            <input type="text" class="form-control" id="size" th:placeholder="#{gardenForm.sizePlaceholder}"
+                   th:name="size" th:value="*{size}" data-cy="size" autofocus
+                   oninput="validateSize(this)" maxlength="64">
+
+            <!-- Description input field and label -->
+            <label for="description" th:text="#{label.description}"></label>
+            <input type="text" class="form-control" id="description" th:placeholder="#{gardenForm.descriptionPlaceholder}"
+                   th:name="description" th:value="*{description}" data-cy="description" maxlength="512"
+                   oninput="validateGardenDescription();descriptionCounter(512)" onfocus="removeErrorPopUp(this)" onclick="removeErrorPopUp(this)">
+            <label id="description-counter" class="char-counter" th:text="${description.length()} + '/512'">0/512</label>
+
+            <!-- Submit and Cancel buttons -->
+            <div class="form-buttons">
+                <button class="button-common" type="submit" id="submit"
+                        th:text="#{button.submit}"></button>
+                <a class="button-common link-button-red" th:href="@{${referer}}"
+                   th:text="#{button.cancel}"></a>
+            </div>
+
+            <div th:if="${errors != null}">
+                <input type="hidden" id="nameError" th:value="${errors[0]}">
+                <input type="hidden" id="countryError" th:value="${errors[1]}">
+                <input type="hidden" id="cityError" th:value="${errors[2]}">
+                <input type="hidden" id="suburbError" th:value="${errors[3]}">
+                <input type="hidden" id="streetError" th:value="${errors[4]}">
+                <input type="hidden" id="postcodeError" th:value="${errors[5]}">
+                <input type="hidden" id="sizeError" th:value="${errors[6]}">
+                <input type="hidden" id="descriptionError" th:value="${errors[7]}">
+            </div>
+
+            <!-- hidden messages used by the autocomplete -->
+            <p id="no-matches-hidden-text" th:text="#{gardenForm.noLocationSuggestions}" style="display: none;"></p>
+            <p id="attribution-starter-hidden-text" th:text="#{gardenForm.autocompleteAttributionStarter}" style="display: none;"></p>
+
+        </form>
+
+        <script th:src="@{/js/FormInputs_HandleEnterKey.js}"></script>
+        <script th:src="@{/js/AutoComplete_SharedFunctions.js}"></script>
+        <script th:src="@{/js/AddressAutoComplete.js}"></script>
+        <script th:src="@{/js/DisableSubmitOnSubmit.js}"></script>
+
+
+    </div>
+
+</body>
+
+</html>

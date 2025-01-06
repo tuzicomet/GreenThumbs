@@ -1,0 +1,114 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<!--  Title should be left blank otherwise it renders on the PDF  -->
+    <title></title>
+    <style>
+        span {
+            word-wrap: break-word;
+        }
+        h3 {
+        }
+
+        img {
+            width: 100%;
+        }
+        .logo {
+            width: 8vw;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin: 4vh 5vw;
+        }
+        .header {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+        .owner-info {
+            margin-top: 5vh;
+        }
+        .table {
+            border-collapse: collapse; /* Ensures borders do not overlap */
+            width: 100%; /* Optional: Makes the table fill the available width */
+        }
+
+        .table th, .table td {
+            border: 1px solid black; /* Adds a border to table cells */
+            padding: 8px; /* Adds some padding to table cells for spacing */
+            text-align: left; /* Aligns text to the left */
+        }
+
+        .table th {
+            background-color: #f2f2f2; /* Adds a background color to the header cells */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="company-details">
+
+             <h2>GreenThumbs</h2>
+        </div>
+        <div class="invoice-details">
+            <h1 th:text="#{invoice.invoice}">INVOICE</h1>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th th:text="#{invoice.invoice} + ' #'">INVOICE #</th>
+                    <th th:text="#{invoice.date}">DATE</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td th:text="${request.id}">ID</td>
+                    <td th:text="${date}">DATE</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="owner-info">
+        <h3 th:text="#{invoice.billTo}">Bill to:</h3>
+        <h3 class="name"  th:text="${request.getOwner().getFormattedName()}">owner</h3>
+        <h3 class="address" th:text="${request.getGarden().getLocation()}">garden location</h3>
+        <h3 class="email" th:text="${request.getOwner().getEmail()}">owner email</h3>
+    </div>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th th:text="#{invoice.title}">Title</th>
+            <th th:text="#{invoice.serviceDetails}">Service Details</th>
+            <th th:text="#{invoice.contractorDetails}">Contractor Details</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td th:text="${request.title}"> Title</td>
+            <td th:text="${request.description}">Service Type</td>
+            <td th:text="${request.getContractor().getFirstName()}">Contractor Name</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td th:text="${request.getContractor().getEmail()}">Contractor email</td>
+        </tr>
+        </tbody>
+    </table>
+    <table class="table">
+        <tbody>
+        <tr>
+            <td th:text="#{invoice.thanks}"> Thank you for using GreenThumbs!</td>
+            <td  th:text="#{invoice.totalPrefix} + ${request.getAgreedPrice()}">TOTAL $ total</td>
+        </tr>
+        </tbody>
+    </table>
+
+
+</div>
+</body>
+</html>

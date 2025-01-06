@@ -1,0 +1,417 @@
+form {
+  padding: 0;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 5vw;
+}
+
+#garden_information {
+  display: flex;
+  justify-content: space-between;
+  overflow: hidden;
+  gap: 1rem;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2vw;
+  margin: 5vw;
+}
+
+.card {
+  display: flex ;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1vw;
+  background-color: #ffffff; /* Card background color */
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* Box shadow for card */
+  transition: 0.3s; /* Smooth transition */
+  border-radius: 8px; /* Rounded corners */
+  max-width: 100%; /* Ensure card doesn't exceed container width */
+}
+
+.card div {
+  padding: 8px;
+}
+
+.garden-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  max-width: 500px;
+}
+
+.card #garden-details .card-content {
+  display: block;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2); /* Larger box shadow on hover */
+}
+
+.attribute-wrapper h3,
+.attribute-wrapper span,
+.attribute-wrapper span.description {
+  max-width: 75%;        /* Ensure the text does not exceed the width of the container */
+  white-space: normal;    /* Allow the text to wrap onto the next line */
+  overflow-wrap: break-word; /* Break long words if necessary */
+  word-wrap: break-word;  /* Support for older browsers */
+  overflow: visible;      /* Ensure overflow is visible (not clipped) */
+  margin: 0.25vh 0;
+}
+
+
+.div-scrollable {
+  margin-left: auto;
+  margin-right: auto;
+  overflow: hidden;
+  overflow-y: auto;
+  height: 500px;
+  width: auto;
+  display: inline-block;
+  padding-right: 12px;
+}
+.contain {
+  object-fit: contain;
+  width: 5vw;
+  border-radius: 120px;
+}
+
+.semi-transparent-button {
+  font-size: small;
+  font-weight: bold;
+  display: block;
+  box-sizing: border-box;
+  margin: 0 auto;
+  max-width: 100px;
+  background: #fff; /* fallback color for old browsers */
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 8px; /*rounded corners*/
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  letter-spacing: 1px;
+  transition: all 0.3s ease-out;
+}
+
+.semi-transparent-button:hover,
+.semi-transparent-button:focus,
+.semi-transparent-button:active {
+  background: #fff;
+  color: #000;
+  transition: all 0.1s ease-in;
+}
+
+.button-overlay {
+  position: relative;
+  display: inline-block;
+}
+
+.button-overlay button {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.semi-transparent-button-listener {
+  display: none;
+}
+
+
+.button-common {
+  padding: 14px 20px;
+  margin: 8px 5px; /* Adjust margins to fit side by side */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  display: inline-block; /* Important for alignment */
+  box-sizing: border-box; /* Include padding and border in the width */
+  white-space: nowrap;
+}
+.form-buttons {
+  display: flex; /* Use flexbox to layout buttons */
+  flex-direction: row;
+}
+
+.link-button-green {
+  background-color: #4caf50; /* Green background */
+  color: white; /* White text */
+  text-decoration: none;
+  width: fit-content;
+}
+
+.link-button-green:hover {
+  background-color: #45a049; /* Darker green for hover state */
+}
+
+.button-max-width {
+  display: block;
+  width: 100%;
+}
+/* Styling for the error message that shows when there's an error with image upload */
+#image-error-message {
+  color: red;
+}
+
+.horizontal-stack {
+  display: flex;
+  flex-direction: row;
+  column-gap: 2%;
+}
+
+.flex-tile {
+  flex: 1;
+}
+
+.weather-container {
+  text-align: center;
+  border: 1px solid black;
+  padding: 0.2em 0.3em;
+  border-radius: 5px;
+}
+
+.weather-container img {
+  width: 100%;
+}
+
+.current-weather {
+  border: 2px solid black;
+}
+
+.weather-temperatures {
+  font-size: 1.4rem;
+  width: 100%;
+  gap: 2px;
+  justify-content: center;
+}
+
+.weather-temperatures > * {
+  display: inline-block;
+}
+
+.weather-temperatures > *:first-child {
+  color: red;
+}
+
+.weather-temperatures > *:last-child {
+  color: blue;
+}
+
+.weather-temperatures > *:only-child {
+  color: black;
+}
+
+.weather-alert {
+  position: fixed;
+  border-radius: 8px;
+  padding: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  align-items: flex-end;
+  top: 10%;
+  right: 1%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  border: 3px solid #b7ce63;
+  z-index: 9999;
+}
+
+.weather-alert-content {
+  padding: 20px;
+}
+
+.close-weather-alert {
+  cursor: pointer;
+  text-align: right;
+}
+input {
+  outline: none;
+}
+.hasError {
+  border: dotted red !important;
+  padding-left: 10px !important;
+}
+
+.isValid {
+  border-color: green !important;
+  border-style: solid !important;
+  padding-left: 10px !important;
+}
+
+.isDefault {
+  border: 1px solid #ccc;
+}
+
+.error {
+  color: #ff0000;
+  text-align: center;
+  font-size: 0.9em;
+  display: block;
+  margin-bottom: 10px;
+}
+
+/* styling for error messages */
+.error-message {
+  color: #ff0000;
+  text-align: center;
+}
+
+.strike-alert {
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0, 0.9);
+  overflow-x: hidden;
+}
+
+.warning {
+  align-self: center;
+  background: #fff;
+  position: relative;
+  top: 30vh;
+  width: 70vw;
+  margin-inline: auto;
+  text-align: center;
+  padding: 3vw;
+  border-radius: 12px;
+}
+.warning span {
+  margin: 2%;
+  display: block;
+}
+
+@media screen and (max-width: 1200px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .contain {
+    width: 8vw;
+  }
+}
+
+@media screen and (max-width: 1100px) {
+  #garden_information {
+  flex-direction: column;
+  }
+
+  .garden-details {
+    width: 100%;
+    max-width: unset;
+  }
+
+  .weather-container span,
+  .weather-container h1 {
+    font-size: 2vmin;
+  }
+
+  .halfWidth {
+    width: unset;
+  }
+}
+
+@media screen and (max-width: 720px) {
+  .container {
+    font-size: 3vw;
+  }
+
+  .halfWidth {
+    width: unset;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .contain {
+    width: 16vw;
+  }
+  .button-common {
+    padding: 2vw;
+    margin: 1vw
+  }
+}
+
+.image-size-error{
+  color: red;
+  font-size: 12px;
+}
+
+.halfWidth {
+  width: unset;
+}
+
+.tag-box {
+  display: block;
+  margin-top: 3%;
+}
+
+.tags {
+  background-color: #654229;
+  text-align: center;
+  color: white;
+  border-radius: 16px;
+  padding: 7px;
+  width: fit-content;
+  flex-wrap: wrap;
+  display: inline-flex;
+  margin: 2px;
+}
+
+#tag-input {
+  margin: 1vh 0;
+}
+
+#add-tag-button {
+  padding: 0 20px;
+  border-radius: 30px;
+}
+
+.error-popup {
+  display: block;
+  max-width: 285px;
+  position: absolute;
+  background-color: #ffffff;
+  color: #484848;
+  font-size: 0.8em;
+  padding: 7px;
+  border-radius: 5px;
+  text-align: center;
+  z-index: 1;
+  margin-top: 2px;
+  box-shadow: 1px 1px 4px grey;
+  animation: fade-in 0.1s linear;
+}
+.autocomplete-tags {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+.autocomplete-tags div {
+  box-sizing: border-box;
+  padding: 10px;
+  border: 1px solid #ccc;
+  width: 66%;
+  border-radius: 4px;
+}
+.autocomplete-tags div:hover{
+  background-color: #d7d7d7;
+}
+
+.garden-details .card-content {
+  word-wrap: break-word;
+  white-space: normal;
+}

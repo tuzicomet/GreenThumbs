@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title th:text="#{homepage.title}"></title>
+    <link th:href="@{/css/baseApplicationStyle.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/homepage.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/icons.css}" rel="stylesheet">
+    <th:block th:insert="~{fragments/navbarHomepage.html :: headerfiles}"></th:block>
+</head>
+<body>
+    <div class="main">
+        <header th:insert="~{fragments/navbarHomepage.html :: navbar}"></header>
+        <div th:unless="${user}">
+            <div id="welcome-box" class="centred-container">
+                <header><h1 th:text="#{homepage.welcome}"></h1></header>
+                <form th:action="@{/homepage}" method="post">
+                    <div class="form-buttons">
+                        <a type="link" class="link-button-green" th:href="@{/register}" th:text="#{button.register}"></a>
+                        <a type="link" class="link-button-green" th:href="@{/login}" th:text="#{button.signIn}"></a>
+                    </div>
+                    <!--
+                    (Provisional solution to clearing login inputs)
+                    If there are any saved inputs from the login page, delete them
+                    -->
+                    <script th:src="@{/js/ClearLoginInputsFromStorage.js}"></script>
+                </form>
+            </div>
+        </div>
+        <!-- My Profile button, shown only to logged-in users -->
+        <div th:if="${user}">
+            <div class="grid-container">
+
+                <!-- Homepage Main Section -->
+                <div class="grid">
+                    <header><h1 th:text="#{homepage.welcome}"></h1></header>
+                    <form class="form-container" th:action="@{/homepage}" method="post">
+                        <div class="form-buttons">
+                            <a class="link-button-green" th:href="@{/profile}" th:text="#{message.myProfile}"></a>
+                            <a class="link-button-green" th:href="@{/garden/responses}" th:text="#{message.myGardens}"></a>
+                        </div>
+                        <!--
+                        (Provisional solution to clearing login inputs)
+                        If there are any saved inputs from the login page, delete them
+                        -->
+                        <script th:src="@{/js/ClearLoginInputsFromStorage.js}"></script>
+                    </form>
+                </div>
+
+                <!-- Recent Gardens Widget -->
+                <div class="grid" th:if="${recentGardensWidgetEnabled}">
+                    <header><h1 th:text="#{homepage.gardenWidgetHeader}"></h1></header>
+                    <!-- Display each recent garden -->
+                    <div th:each="garden, iterStat : ${recentGardens}" th:if="${iterStat.index < 10}">
+                        <a class="recentGarden-tile" th:href="@{'/garden/' + ${garden.id}}">
+                            <div class="tile-contents">
+                                <div class="attribute-wrapper">
+                                    <p th:text="${garden.name}"></p>
+                                    <!-- show globe icon if garden is not public, otherwise lock icon -->
+                                    <span th:if="${!garden.isPublicised()}" class="material-symbols-outlined">lock</span>
+                                    <span th:if="${garden.isPublicised()}" class="material-symbols-outlined">globe</span>
+                                </div>
+                                <div>
+                                    <!-- show all tags if user owns the garden, otherwise only show the verified ones -->
+                                    <span th:if="${isOwner}" class="tags" th:each="tag : ${garden.getTags()}" th:text="${tag.getContent()}"></span>
+                                    <span th:unless="${isOwner}" class="tags" th:each="tag : ${garden.getVerifiedTags()}" th:text="${tag.getContent()}"></span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Recent Plants Widget -->
+                <div class="grid" th:if="${recentPlantsWidgetEnabled}">
+                    <header><h1 th:text="#{homepage.plantWidgetHeader}"></h1></header>
+                    <div th:each="plant, iterStat : ${recentPlants}" th:if="${iterStat.index < 10}">
+                        <a class="recentPlant-tile" th:href="@{'/garden/' + ${plant.garden.id} + '/plant/' + ${plant.id} + '/edit'}">
+                            <img th:src="@{${plant.imagePath}}" alt="Plant Image" class="plant-thumbnail">
+                            <span th:text="${plant.name}"></span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Friends Widget -->
+                <div class="grid" th:if="${friendWidgetEnabled}">
+                    <header><h1 th:text="#{homepage.friendWidgetHeader}"></h1></header>
+                    <a class="friend-tile" th:each="friend : ${friends}" th:href="@{'/profile/user/' + ${friend.getUserId()}}">
+                        <img th:src="@{${friend.getProfilePicture()}}">
+                        <span th:text="${friend.getFormattedName()}"></span>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

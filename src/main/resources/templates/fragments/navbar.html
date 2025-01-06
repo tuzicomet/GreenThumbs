@@ -1,0 +1,74 @@
+<div th:fragment="navbar" class="navbar">
+    <ul>
+        <!-- Link to the homepage -->
+        <li><a th:href="@{/}" th:text="#{navbar.home}"></a></li>
+
+        <!-- Dropdown for user gardens -->
+        <li class="dropdown">
+            <!-- Text shown on the navbar, which when hovered, opens the dropdown -->
+            <a href="javascript:void(0)" class="dropbtn" th:href="@{/garden/responses}"
+               th:text="#{navbar.gardens}"></a>
+            <div class="dropdown-content">
+                <!-- Link to the create garden page -->
+                <a th:href="@{/garden}" style="font-weight: bold"
+                   th:text="#{navbar.createGarden}"></a>
+                <!-- Display each of the user's gardens by name, which links to that respective garden -->
+                <a th:each="garden : ${usersGardens}" th:href="@{/garden/{gardenId}(gardenId=${garden.id})}"
+                   th:text="${garden.name}"></a>
+            </div>
+        </li>
+
+        <!-- link to the friends page -->
+        <li><a th:href="@{/friends}" th:text="#{navbar.friends}"></a></li>
+
+        <!-- link to browse gardens page -->
+        <li><a th:href="@{/browseGardens}" th:text="#{navbar.browseGardens}"></a></li>
+
+        <!-- link to available jobs page -->
+        <li th:if="${isContractor}"><a th:href="@{/availableJobs}" th:text="#{navbar.availableJobs}"></a></li>
+
+        <!-- link to my jobs page -->
+        <li th:if="${isContractor}"><a th:href="@{/myJobs}" th:text="#{navbar.myJobs}"></a></li>
+
+        <!-- Link to My Service Requests-->
+        <li><a th:href="@{/myServiceRequests}" th:text="#{navbar.myServiceRequests}"></a></li>
+
+        <!-- Dropdown for selecting site language -->
+        <li class="dropdown" id="language-dropdown">
+            <!-- Text shown on the navbar, which when hovered, opens the dropdown -->
+            <a href="javascript:void(0)" class="dropbtn"
+               th:text="#{navbar.language}"></a>
+            <!-- Display the different language options. When one is selected,
+             it will change the current locale to that option -->
+            <div class="dropdown-content">
+                <!-- English -->
+                <a href="#" onclick="setLocaleToGivenOption('en')"
+                   th:text="#{navbar.eng}"></a>
+                <!-- French -->
+                <a href="#" onclick="setLocaleToGivenOption('fr')"
+                   th:text="#{navbar.fr}"></a>
+            </div>
+        </li>
+
+        <!-- Link to the profile page, which shows a dropdown for the logout button when hovered -->
+        <li class="dropdown" id="profile">
+            <a href="javascript:void(0)" class="dropbtn" th:href="@{/profile}"
+               th:text="#{navbar.profile}"></a>
+            <div class="dropdown-content">
+                <a th:href="@{/logout}" style="font-weight: bold"
+                   th:text="#{navbar.logout}"></a>
+                <a th:href="@{/homepage/edit}" style="font-weight: bold"
+                   th:text="#{navbar.editMainPage}"></a>
+            </div>
+        </li>
+    </ul>
+
+
+    <!-- Script for changing the current locale to a given option -->
+    <script th:src="@{/js/SetLocaleToGivenOption.js}"></script>
+</div>
+
+<div th:fragment="headerfiles">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}" >
+</div>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title th:text="#{myGardens.title}"></title>
+    <link th:href="@{/css/baseApplicationStyle.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/myGardensStyle.css}" rel="stylesheet">
+    <link th:href="@{/css/availableJobs.css}" rel="stylesheet">
+
+    <th:block th:insert="~{fragments/navbar.html :: headerfiles}"></th:block>
+</head>
+<body>
+<div>
+    <header th:insert="~{fragments/navbar.html :: navbar}"></header>
+
+    <div class="container">
+        <h4 class="header-label" th:text="#{message.availableJobs}"></h4>
+        <div class="controls-container">
+            <div class="sort-controls toolbar" >
+                <form th:action="@{/availableJobs}" th:method="GET">
+                    <label for="orderPrompt" th:text="#{availableJobs.sortingLabel}"></label>
+                    <select id="orderPrompt" name="orderPrompt" onchange="this.form.submit()">
+                        <option th:value="latestRelease" th:text="#{availableJobs.latestRelease}" th:selected="${orderPrompt == 'latestRelease'}"></option>
+                        <option th:value="earliestRelease" th:text="#{availableJobs.earliestRelease}" th:selected="${orderPrompt == 'earliestRelease'}"></option>
+                        <option th:value="earliestAvailable" th:text="#{availableJobs.earliestAvailable}" th:selected="${orderPrompt == 'earliestAvailable'}"></option>
+                        <option th:value="latestAvailable" th:text="#{availableJobs.latestAvailable}" th:selected="${orderPrompt == 'latestAvailable'}"></option>
+                        <option th:value="lowestBudget" th:text="#{availableJobs.lowestBudget}" th:selected="${orderPrompt == 'lowestBudget'}"></option>
+                        <option th:value="highestBudget" th:text="#{availableJobs.highestBudget}" th:selected="${orderPrompt == 'highestBudget'}"></option>
+                        <option th:value="closestDistance" th:text="#{availableJobs.closestDistance}" th:selected="${orderPrompt == 'closestDistance'}"></option>
+                        <option th:value="furthestDistance" th:text="#{availableJobs.furthestDistance}" th:selected="${orderPrompt == 'furthestDistance'}"></option>
+                    </select>
+                    <input type="hidden" name="filtersOpen" id="filtersOpenSort" th:value="${filtersOpen}">
+                    <input type="hidden" name="priceMin" id="priceMinSort" th:value="${priceMin}">
+                    <input type="hidden" name="priceMax" id="priceMaxSort" th:value="${priceMax}">
+                    <input type="hidden" name="dateMin" id="dateMinSort" th:value="${dateMin}">
+                    <input type="hidden" name="dateMax" id="dateMaxSort" th:value="${dateMax}">
+                    <input type="hidden" name="maxDistance" id="maxDistanceSort" th:value="${maxDistance}">
+                </form>
+
+            </div>
+            <div id="filter-controls-container">
+                <div class="filter-controls toolbar" id="filters-div">
+                    <div id="toggle-div" class="date-filter-container toggle-div">
+                        <h4 id="toggle-filters" th:text="'>'"></h4>
+                        <h4 th:text="#{availableJobs.filters}"></h4>
+                    </div>
+                    <form id="filterForm" th:action="@{/availableJobs}" th:method="GET">
+                        <label class="collapsible-content" for="dateDiv" th:text="#{availableJobs.date}"></label>
+                        <div class="date-filter-container collapsible-content" id="dateDiv">
+                            <input type="text" id="dateMin" name="dateMin" th:placeholder="#{placeholder.dateFormatPlaceHolder}" th:value="${dateMin}"
+                                   onfocus="removeErrorPopUp(this)" onclick="removeErrorPopUp(this)" maxlength="10">
+                            <label class="padded-label">-</label>
+                            <input type="text" id="dateMax" name="dateMax" th:placeholder="#{placeholder.dateFormatPlaceHolder}" th:value="${dateMax}"
+                                   onfocus="removeErrorPopUp(this)" onclick="removeErrorPopUp(this)"maxlength="10">
+                        </div>
+                        <label class="collapsible-content" for="budgetDiv" th:text="#{availableJobs.budget}"></label>
+                        <div class="budget-filter-container  collapsible-content"
+                             id="budgetDiv">
+                            <label>$</label>
+                            <input type="text" id="priceMin" name="priceMin" th:value="${priceMin}" placeholder="0" onfocus="removeErrorPopUp(this)"
+                                   onclick="removeErrorPopUp(this)" maxlength="10">
+                            <label class="padded-label">-</label>
+                            <label>$</label>
+                            <input type="text" id="priceMax" name="priceMax" th:value="${priceMax}" placeholder="&infin;" onfocus="removeErrorPopUp(this)"
+                                   onclick="removeErrorPopUp(this)" maxlength="10">
+                        </div>
+                        <label class="collapsible-content"
+                               for="distance" th:text="#{availableJobs.maxDistance}"></label>
+                        <div class="budget-filter-container  collapsible-content" id = "distanceDiv">
+                            <input type="text" id="distance" name="maxDistance" th:value="${maxDistance}" onfocus="removeErrorPopUp(this)"
+                                   onclick="removeErrorPopUp(this)" maxlength="10">
+                            <label>km</label>
+                        </div>
+                        <input type="hidden" name="filtersOpen" id="filtersOpen" th:value="${filtersOpen}">
+                        <input type="hidden" name = "orderPrompt" id="filterFormOrderPrompt" th:value="${orderPrompt}">
+                        <button id="submit-filters" type="submit" class="button-common no-margin collapsible-content" th:text="#{availableJobs.apply}"></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="job-section">
+            <h5 class=" top-padding" th:if="${jobs.isEmpty()}" th:text="#{availableJobs.emptyError}"></h5>
+
+            <div th:each="job : ${jobs}" >
+                <a th:href="@{/serviceRequest/{id}(id=${job.id})}" style="text-decoration: none; color: inherit;">
+                    <div class="garden-container">
+                        <div class="garden-info">
+                            <div class="attribute-wrapper">
+                                <h3 th:text="${job.getTitle()}">Job Title</h3><br>
+                            </div>
+                            <div class="attribute-wrapper">
+                                <span th:text = "${jobDistances[job.getId()]} + #{availableJobs.distanceSuffix}">Distance</span><br>
+                            </div>
+                            <div class="attribute-wrapper">
+                                <span th:text="${job.getDateRangeString()}">Date Range</span><br>
+                            </div>
+                            <div class="attribute-wrapper">
+                                <span th:text="${job.getPriceRangeString()}">Price Range</span><br>
+                            </div>
+                        </div>
+                        <div class="job-image">
+                            <img th:src="@{${job.getImagePath()}}" alt="Job thumbnail">
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div th:if="${totalPages > 1}" class="pagination-container">
+                <ul class="pagination">
+                    <li th:if="${currentPage > 0}">
+                        <a th:href="@{/availableJobs(orderPrompt=${orderPrompt}, page=0, size=${size}, sort=${#strings.arrayJoin(sort, ',')})}" th:text="#{browseGardens.first}"></a>
+                    </li>
+                    <li th:if="${currentPage > 0}">
+                        <a th:href="@{/availableJobs(orderPrompt=${orderPrompt}, page=${currentPage - 1}, size=${size}, sort=${#strings.arrayJoin(sort, ',')})}" th:text="#{message.previous}"></a>
+                    </li>
+                    <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:class="${currentPage == i} ? 'active'">
+                        <a th:href="@{/availableJobs(orderPrompt=${orderPrompt}, page=${i}, size=${size}, sort=${#strings.arrayJoin(sort, ',')})}" th:text="${i + 1}"></a>
+                    </li>
+                    <li th:if="${currentPage < totalPages - 1}">
+                        <a th:href="@{/availableJobs(orderPrompt=${orderPrompt}, page=${currentPage + 1}, size=${size}, sort=${#strings.arrayJoin(sort, ',')})}" th:text="#{message.next}"></a>
+                    </li>
+                    <li th:if="${currentPage < totalPages - 1}">
+                        <a th:href="@{/availableJobs(orderPrompt=${orderPrompt}, page=${totalPages - 1}, size=${size}, sort=${#strings.arrayJoin(sort, ',')})}" th:text="#{browseGardens.last}"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- HiddenInputs so we can use the error messages in JavaScript -->
+<input type="hidden" id="errorTitle" th:value="${errorMaxDistance}">
+<input type="hidden" id="errorDateMin" th:value="${errorDateMin}">
+<input type="hidden" id="errorDateMax" th:value="${errorDateMax}">
+<input type="hidden" id="errorPriceMin" th:value="${errorPriceMin}">
+<input type="hidden" id="errorPriceMax" th:value="${errorPriceMax}">
+<input type="hidden" id="errorMaxDistance" th:value="${errorMaxDistance}">
+<script th:src="@{/js/AllForms_ChangeValidityStyles.js}"></script>
+<script th:src="@{/js/JobFilterValidation.js}"></script>
+</body>
+</html>

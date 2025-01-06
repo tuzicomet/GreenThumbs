@@ -1,0 +1,148 @@
+#welcome-box {
+    margin: 25vh auto;
+    max-width: 25em;
+}
+
+header h1 {
+    margin: 20px 0 20px 0;
+    text-align: center; /* Center the title */
+    font-size: large;
+}
+
+
+.form-buttons {
+    display: flex;
+    flex-direction: column; /* Stack the buttons vertically */
+}
+
+.form-container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    width: auto; /* Fixed width for the form */
+}
+
+.link-button-green {
+    padding: 14px 20px;
+    margin-bottom: 10px; /* Adds space between the buttons */
+    border: none;
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Indicates the element is clickable */
+    font-size: 1rem; /* Sets a standard font size */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    text-decoration: none;
+}
+
+.link-button-green:hover {
+    background-color: #45a049; /* Darker green for hover state */
+}
+
+/* Adjusts the last button to not have a bottom margin */
+.form-buttons .link-button:last-child {
+    margin-bottom: 0;
+}
+
+/* Center the buttons text */
+.link-button {
+    text-align: center;
+}
+
+/* Gives one row of equally sized columns */
+.grid-container {
+    display: grid;
+    grid-auto-columns: minmax(0, 1fr);
+    grid-auto-flow: column;
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    width: 90%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 5vh auto;
+    left: 50%;
+    top:10%;
+}
+
+/* Styling for smaller screens */
+@media (max-width: 600px) {
+    .grid-container {
+        /* Stack widgets vertically, rather than having them horizontally */
+        grid-auto-flow: row;
+    }
+}
+
+.grid {
+    margin: 2%;
+}
+
+.friend-tile {
+    display: flex;
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px;
+    align-items: center;
+    border-radius: 4px;
+    text-decoration: none;
+    margin: 10px 0;
+}
+
+.friend-tile img {
+    height: 5vh;
+    width: 5vh;
+    object-fit: cover;
+    border-radius: 100%;
+    margin: 2px 10px 2px 4px;
+}
+
+.friend-tile span {
+    /* Make sure the box looks alright when resizing */
+    text-overflow: ellipsis;
+    overflow: hidden;
+    flex: 1;
+}
+
+.recentGarden-tile {
+    display: flex;
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px;
+    align-items: center;
+    border-radius: 4px;
+    text-decoration: none;
+    margin: 10px 0;
+    min-height: 5.5vh;
+}
+
+.recentGarden-tile span {
+    /* Make sure the box looks alright when resizing */
+    text-overflow: ellipsis;
+    overflow: hidden;
+    flex: 1;
+}
+
+.recentPlant-tile {
+    display: flex;
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px;
+    align-items: center;
+    border-radius: 4px;
+    text-decoration: none;
+    margin: 10px 0;
+}
+
+.recentPlant-tile span {
+    /* Make sure the box looks alright when resizing */
+    text-overflow: ellipsis;
+    overflow: hidden;
+    flex: 1;
+}
+
+.recentPlant-tile img {
+    height: 5vh;
+    width: 5vh;
+    object-fit: cover;
+    border-radius: 100%;
+    margin: 2px 10px 2px 4px;
+}

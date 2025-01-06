@@ -1,0 +1,561 @@
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.container-application {
+    margin: 2rem auto;
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.container-questions {
+    margin: 2rem auto;
+    background-color: #ffffff;
+    padding-top: 1rem;
+    padding-bottom: 0.2rem;
+}
+
+.container-dropdown {
+    max-width: 1264px;
+    margin: auto;
+    background-color: #ffffff;
+    border-radius: 8px;
+    /*border-top-left-radius: 8px;*/
+    /*border-top-right-radius: 8px;*/
+    padding: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.container-applications {
+    max-width: 1200px;
+    margin: auto;
+    background-color: #ffffff;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#container-no-application {
+    margin: 2rem auto;
+}
+
+/* Title styling */
+h1 {
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    color: #333;
+}
+
+/* Details container with flexbox for layout */
+.details-container {
+    display: flex;
+    flex-wrap: wrap; /* Allow flex items to wrap */
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+}
+
+.text-details {
+    flex: 2;
+    max-width: 500px;
+    overflow: auto;
+}
+
+.text-details p {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    color: #555;
+    white-space: normal;    /* Allow the text to wrap onto the next line */
+    overflow-wrap: break-word; /* Break long words if necessary */
+    word-wrap: break-word;  /* Support for older browsers */
+    overflow: visible;      /* Ensure overflow is visible (not clipped) */
+}
+
+.text-details span {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    color: #555;
+}
+
+/* Image container styling */
+.image-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1vw;
+    min-width: 200px; /* Ensure a minimum width to prevent overflow */
+}
+
+.attached-image {
+    max-width: 100%;
+    max-height: 250px;
+    width: auto;
+    height: auto;
+    border-radius: 8px;
+    object-fit: contain;
+}
+
+/* Buttons styling */
+.form-buttons {
+    margin-top: 1rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.button-common {
+    border-radius: 4px;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.link-button-green {
+    background-color: #4caf50;
+    color: white;
+}
+
+.link-button-green:hover {
+    background-color: #45a049;
+}
+
+.link-button-green:disabled {
+    background-color: #c5eec2;
+    color: #888;
+    cursor: not-allowed;
+}
+
+.link-button-red {
+    background-color: #f44336;
+    color: white;
+}
+
+.link-button-red:hover {
+    background-color: #e53935;
+}
+
+.modal-content {
+    display: block;
+}
+
+.modal-header {
+    text-align: center;
+    margin-bottom: 1em;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+#job-application-form {
+    width: initial;
+}
+
+#name span {
+    font-size: x-large;
+    color: #654229;
+    font-weight: 600;
+}
+
+/* Style the button that is used to open and close the collapsible content */
+.collapsible {
+    cursor: pointer;
+    width: 100%;
+    border: none;
+    text-align: left;
+    font-size: 15px;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2em;
+}
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+.active, .collapsible:hover {
+    background-color: #f4f4f4;
+}
+
+.active {
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+/* Style the collapsible content. Note: hidden by default */
+.content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+}
+
+span {
+    transition: 0.2s all ease-in-out;
+}
+
+.active span {
+    transform: rotate(90deg);
+}
+
+.space {
+    padding: 5%;
+}
+
+.collapsible.container-dropdown {
+    transition: 0.5s ease-in-out;
+}
+
+.collapsible.container-dropdown.active {
+    transition: 0s;
+}
+
+.application-button {
+    font-size: 1em;
+    padding: 0.5em 0.7em;
+    color: white;
+    border: none;
+    border-radius: 0.35em;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 0 0.4em rgba(0, 0, 0, 0.3);
+    width: 8.3em;
+}
+
+.modal > form {
+    background-color: transparent;
+    padding: 0;
+    border-radius: 0;
+}
+
+#contractor-image {
+    max-width: 100%;
+    max-height: 50px;
+    border-radius: 25px;
+    margin-right: 0.5vw;
+}
+
+.accepted-application {
+    padding: 1rem 2rem;
+}
+.accepted-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.align-center {
+    display: flex;
+    align-items: center;
+}
+.accepted-details {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 5vw;
+}
+
+.star {
+    font-size: 10vh;
+    cursor: pointer;
+}
+
+.no_interact_star {
+    font-size: 10vh;
+}
+
+.grey {
+    color: grey;
+}
+
+.one {
+    color: rgb(255, 0, 0);
+}
+
+.two {
+    color: rgb(255, 106, 0);
+}
+
+.three {
+    color: rgb(251, 255, 120);
+}
+
+.four {
+    color: rgb(255, 255, 0);
+}
+
+.five {
+    color: rgb(24, 159, 14);
+}
+
+#submit-rating:disabled {
+    background-color: #c5eec2;
+    color: #888;
+    cursor: not-allowed;
+}
+
+.message-display-container {
+    background-color: #929292;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    align-items: center;
+    margin: 5vh 5vw;
+}
+
+.question {
+    float: left;
+    background: lightgray;
+    padding: 1vw;
+    border-radius: 0.5vw;
+    margin-left: 1vw;
+    margin-top: 1vw;
+}
+
+.question-box {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0 5px 0 !important;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 1rem; /* Adjusted for consistency */
+}
+
+.answer {
+    float: right;
+    background: lightgray;
+    padding: 1vw;
+    margin-right: 1vw;
+    border-radius: 0.5vw;
+}
+
+.answer-box {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0 5px 0;
+    display: inline-block;
+    box-sizing: border-box;
+    font-size: 1rem;
+    float: right;
+}
+
+.ask-question-button {
+    width: calc(20% - 10px); /* Adjust width calculation */
+    padding: 14px 10px;
+    margin: 8px 5px; /* Adjust margins to fit side by side */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    text-align: center;
+    display: inline-block; /* Important for alignment */
+    box-sizing: border-box; /* Include padding and border in the width */
+}
+
+.profile-image {
+    object-fit: contain;
+    width: 3vw;
+    border-radius: 1.5vw;
+    height: fit-content;
+    float: left;
+    margin-top: 1vw;
+}
+
+.profile-image-right {
+    object-fit: contain;
+    width: 3vw;
+    border-radius: 1.5vw;
+    height: fit-content;
+    float: right;
+}
+
+.question-format {
+    display: flex;
+    gap: 1em;
+    margin: 2vh 0;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#submit-question-form {
+    display: contents;
+}
+
+#answer-form button {
+    width: auto;
+}
+
+.contractor-card {
+    max-width: 1200px;
+    display: flex;
+    align-items: center;
+    margin: auto auto 35px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 15px 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    justify-content: space-between;
+}
+.action-button {
+    font-size: 1em;
+    padding: 0.5em 0.7em;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 0.35em;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 0 0.4em rgba(0, 0, 0, 0.3);
+    width: 8.3em;
+}
+
+.action-button:disabled {
+    background-color: #c5eec2;
+    color: #888;
+    cursor: not-allowed;
+}
+
+
+.disabled-button {
+    font-size: 1em;
+    padding: 0.5em 0.7em;
+    background-color: #616761;
+    color: white;
+    border: none;
+    border-radius: 0.35em;
+    text-decoration: none;
+    box-shadow: 0 0 0.4em rgba(0, 0, 0, 0.3);
+    width: 13.3em;
+}
+
+.disabled-button-no-sizing {
+    border-radius: 4px;
+    text-align: center;
+    text-decoration: none;
+    background-color: #c5eec2;
+    color: #888;
+    cursor: not-allowed;
+}
+
+.disabled-button-no-sizing:hover {
+    background-color: #c5eec2;
+}
+.disabled-button:hover {
+    background-color: #616761;
+}
+
+.char-counter {
+    margin-top: unset;
+    margin-left: 4px;
+}
+
+.QA-Box {
+    display: flex;
+    flex-direction: column;
+    background-color: #f5f5f5;
+    padding: 1vw;
+    border-radius: 12px;
+    margin: 1vh;
+}
+
+.answer-button {
+    float: right;
+    width: 15vw;
+    margin-right: 3vw;
+}
+
+
+.ask-question-button:disabled {
+    background-color: grey;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+.ask-question-button:disabled:hover {
+    background-color: grey;
+}
+
+.contractor-name-and-ratings {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 2vw;
+    margin-bottom: 2vh;}
+
+#contractorProfilePicture {
+    width: 12vw;
+    border-radius: 6vw;
+}
+
+#contractorName {
+    font-size: 1.5rem;
+}
+
+.contractor-work-pictures {
+    width: 15vw;
+}
+
+.info-header {
+    margin-bottom: 1vh;
+}
+
+.modal {
+    overflow: unset;
+}
+
+.hover-effect {
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease-in-out;
+}
+
+.hover-effect:hover {
+    transform: scale(1.02, 1.02);
+}
+
+
+#no-unanswered-info {
+    border-style: solid;
+    border-color: #4CAF50A1;
+    background-color: #4CAF5038;
+    border-radius: 0.3em;
+    padding: 1em;
+}
+
+.attribute-wrapper-details {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    column-gap: 10px;
+}
+
+.attribute-wrapper h3, .attribute-wrapper span {
+    max-width: 75%;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+}
+
+.contractor-flair {
+    position: absolute;
+    margin-top: -5.746em;
+    width: 15em;
+    margin-left: -1.176em;
+    z-index: 1;
+}
+.blue-button {
+    background-color: #2eb2d9;
+}
+
+.blue-button:hover {
+    background-color: #3a8ea7;
+}
+
+#congrats {
+    font-size: 2rem;
+}

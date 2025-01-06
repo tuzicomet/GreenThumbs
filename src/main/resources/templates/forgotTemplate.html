@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="#{forgotPassword.title}"></title>
+  <link th:href="@{/css/baseApplicationStyle.css}" rel="stylesheet" type="text/css"/>
+  <th:block th:insert="~{fragments/navbarLoggedOut.html :: headerfiles}"></th:block>
+
+  <!-- Scripts for showing error messages -->
+  <script th:src="@{/js/AllForms_ChangeValidityStyles.js}"></script>
+  <script th:src="@{/js/User_ValidateDetails.js}"></script>
+  <script th:inline="javascript">
+    window.onload = () => {
+      validateEmail();
+      showAllErrors();
+    }
+  </script>
+</head>
+
+<body>
+
+<div>
+  <header th:insert="~{fragments/navbarLoggedOut.html :: navbar}"></header>
+</div>
+
+<div id="center-div">
+  <div class="centred-container">
+    <div class="text" th:text="#{forgotPassword.instruction}"></div>
+
+    <!-- Forgot password form -->
+    <form th:action="@{/forgot}" method="post" novalidate>
+
+      <div>
+        <!-- Email label and input field -->
+        <label for="email" th:text="#{label.email}"></label>
+        <input type="text" id="email" th:name="email" th:value="${email}" maxlength="200"
+               oninput="validateEmail()" onchange="validateEmail()" onfocus="removeErrorPopUp(this)"
+               onclick="removeErrorPopUp(this)"/>
+      </div>
+
+      <div class="form-buttons">
+        <input name="submit" type="submit" class="button-common"
+               th:value="#{button.submit}">
+      </div>
+
+      <div th:if="${confirmation}" th:text="${confirmation}" class="confirmation-message"></div>
+
+      <!-- HiddenInputs to display with JavaScript if there are errors with input -->
+      <input type="hidden" id="emailError" th:value="${emailError}">
+
+    </form>
+
+  </div>
+</div>
+<script th:src="@{/js/FormInputs_HandleEnterKey.js}"></script>
+
+</body>
+
+</html>

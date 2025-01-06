@@ -1,0 +1,36 @@
+<div th:fragment="navbar" class="navbar">
+    <ul>
+        <!-- Link to the homepage -->
+        <li><a th:href="@{/}" th:text="#{navbar.home}"></a></li>
+
+        <!-- Dropdown for selecting site language -->
+        <li class="dropdown" id="language-dropdown">
+            <!-- Text shown on the navbar, which when hovered, opens the dropdown -->
+            <a href="javascript:void(0)" class="dropbtn"
+               th:text="#{navbar.language}"></a>
+            <!-- Display the different language options. When one is selected,
+             it will change the current locale to that option -->
+            <div class="dropdown-content">
+                <!-- English -->
+                <a href="#" onclick="setLocaleToGivenOption('en')"
+                   th:text="#{navbar.eng}"></a>
+                <!-- French -->
+                <a href="#" onclick="setLocaleToGivenOption('fr')"
+                   th:text="#{navbar.fr}"></a>
+            </div>
+        </li>
+
+        <!-- If the user is logged in but unverified, add a logout button -->
+        <div th:if="${!isUserVerified && user != null}">
+            <li style="float: right;">
+                <a th:href="@{/logout}" th:text="#{navbar.logout}"></a>
+            </li>
+        </div>
+    </ul>
+
+
+    <!-- Script for changing the current locale to a given option -->
+    <script th:src="@{/js/SetLocaleToGivenOption.js}"></script>
+</div>
+
+<link rel="stylesheet" th:href="@{/css/navbar.css}" th:fragment="headerfiles">

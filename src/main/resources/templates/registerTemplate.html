@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title th:text="#{register.title}"></title>
+  <link th:href="@{/css/register.css}" rel="stylesheet" type="text/css"/>
+  <link th:href="@{/css/baseApplicationStyle.css}" rel="stylesheet" type="text/css"/>
+  <th:block th:insert="~{fragments/navbarLoggedOut.html :: headerfiles}"></th:block>
+  <script th:src="@{/js/AllForms_ChangeValidityStyles.js}"></script>
+  <script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+      var dateOfBirthInput = document.getElementsByName("dateOfBirth")[0];
+      var today = new Date().toISOString().split('T')[0];
+      dateOfBirthInput.setAttribute('max', today);
+
+      toggleLastNameField();
+      validateAll();
+      showAllErrors();
+    });
+  </script>
+  <script th:src="@{/js/UserForms_ToggleLastName.js}"></script>
+</head>
+<body>
+<div>
+  <header th:insert="~{fragments/navbarLoggedOut.html :: navbar}"></header>
+</div>
+
+<div id="register-form-container">
+  <form id="register-form" th:action="@{/register}" method="post" novalidate>
+
+    <!-- First Name label and input field -->
+    <label for="firstName" th:text="#{label.firstName}"></label>
+    <input type="text" id="firstName" th:name="firstName" th:value="${firstName}" autofocus maxlength="200"
+           oninput="validateFirstName();removeErrorPopUp(this);"  onclick="removeErrorPopUp(this)"/>
+
+    <!-- Last Name label and input field -->
+    <label for="lastName" th:text="#{label.lastName}"></label>
+    <input type="text" id="lastName" th:name="lastName" th:value="${lastName}" maxlength="200"
+           oninput="validateLastName()"  onfocus="removeErrorPopUp(this)" onclick="removeErrorPopUp(this)"/>
+
+    <!-- No surname checkbox and text -->
+    <label>
+      <input type="checkbox" id="noSurname" name="noSurname" th:checked="${noSurname}"
+             onclick="toggleLastNameField()" th:text="' ' + #{message.noSurname}"/>
+    </label>
+    <br>
+
+    <!-- Email label and input field -->
+    <label for="email" th:text="#{label.email}"></label>
+    <input type="text" id="email" th:name="email" th:value="${email}" maxlength="200"
+           oninput="validateEmail()" onchange="validateEmail()" onfocus="removeErrorPopUp(this)"
+           onclick="removeErrorPopUp(this)"/>
+
+    <!-- Password label and input field -->
+    <label for="password" th:text="#{label.password}"></label>
+    <input type="password" id="password" name="password" maxlength="200"
+           oninput="validatePassword();validatePasswordsMatch()" onfocus="removeErrorPopUp(this)"
+           onclick="removeErrorPopUp(this)"/>
+
+    <!-- Confirm Password label and input field -->
+    <label for="confirmPassword" th:text="#{label.confirmPassword}"></label>
+    <input type="password" id="confirmPassword" name="confirmPassword" maxlength="200"
+           oninput="validatePasswordsMatch()" onfocus="removeErrorPopUp(this)" onclick="removeErrorPopUp(this)"/>
+
+    <!-- Date of Birth label and input field -->
+    <label for="dateOfBirth" th:text="#{label.dateOfBirth}"></label>
+    <input type="text" id="dateOfBirth" name="dateOfBirth" th:value="${dateOfBirth}"
+           th:placeholder="#{placeholder.dateFormatPlaceHolder}"
+           maxlength="10"
+           oninput="validateDateOfBirth()"
+           onfocus="removeErrorPopUp(this)" onclick="removeErrorPopUp(this)"
+    />
+
+    <div class="form-buttons">
+      <input type="submit" id="submit" name="submit" class="button-common"
+             th:value="#{button.signUp}"/>
+      <a id="cancel" th:href="@{/homepage}" class="button-common link-button-red"
+         th:text="#{button.cancel}"></a>
+    </div>
+
+
+    <!-- HiddenInputs so we can use the error messages in JavaScript -->
+    <input type="hidden" id="firstNameError" th:value="${firstNameError}">
+    <input type="hidden" id="lastNameError" th:value="${lastNameError}">
+    <input type="hidden" id="emailError" th:value="${emailError}">
+    <input type="hidden" id="passwordStrengthError" th:value="${passwordStrengthError}">
+    <input type="hidden" id="passwordError" th:value="${passwordError}">
+    <input type="hidden" id="dobError" th:value="${dobError}">
+  </form>
+</div>
+<script th:src="@{/js/User_ValidateDetails.js}"></script>
+<script th:src="@{/js/FormInputs_HandleEnterKey.js}"></script>
+<script>
+      document.addEventListener("DOMContentLoaded", function() {
+    const forms = document.querySelectorAll('submit');
+
+    forms.forEach(function(form) {
+    form.addEventListener('click', function(event) {
+    const submitButton = form.querySelector('#submit');
+    if (submitButton) {
+    submitButton.disabled = true;
+    }
+    });
+    });
+    });
+</script>
+
+
+<!--
+(Provisional solution to clearing login inputs)
+If there are any saved inputs from the login page, delete them
+-->
+<script th:src="@{/js/ClearLoginInputsFromStorage.js}"></script>
+</body>
+
+</html>

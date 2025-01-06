@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="headerfiles">
+  <meta context="text/html; charset=UTF-8" http-equiv="Content-Type">
+  <title th:text="#{gardenDetails.title}"></title>
+  <link th:href="@{/css/baseApplicationStyle.css}" rel="stylesheet" type="text/css"/>
+  <link th:href="@{/css/icons.css}" rel="stylesheet">
+  <link th:href="@{/css/gardenDetailsStyle.css}" rel="stylesheet">
+  <th:block th:insert="~{fragments/navbar.html :: headerfiles}"></th:block>
+
+  <script th:src="@{/js/Garden_StatusHandler.js}"></script>
+  <script th:src="@{/js/closeAlert.js}"></script>
+  <script th:src="@{/js/AllForms_ChangeValidityStyles.js}"></script>
+  <script>
+    window.onload = () =>{
+      validateTag();
+      showTagErrors();
+    }
+  </script>
+</head>
+
+<body>
+<header th:insert="~{fragments/navbar.html :: navbar}"></header>
+<div class="container" id="garden_information">
+    <div th:if="${isOwner && !alerts.isEmpty()}" id="weather-alert" class="weather-alert">
+        <div class="weather-alert-content" th:each="alert : ${alerts}">
+            <form th:action="@{/closeAlert}" method="post">
+                <input type="hidden" th:name="alertId" th:value="${alert.id}" />
+                <input type="hidden" th:name="gardenId" th:value="${gardenId}" />
+                <button type="submit" class="close-weather-alert">&times;</button>
+            </form>
+            <p th:if="${alert.getType() == alert.DO_NOT_WATER}" th:text="#{weatherAlert.outdoorPlantsDontNeedWatering}"></p>
+          <p th:if="${alert.getType() == alert.NEED_WATER}" th:text="#{weatherAlert.noRainRecently}"></p>
+        </div>
+    </div>
+  <div class="garden-details">
+      <div class="attribute-wrapper">
+        <span th:if="${!garden.isPublicised()}" class="material-symbols-outlined">lock</span>
+        <span th:if="${garden.isPublicised()}" class="material-symbols-outlined">globe</span>
+          <h3 th:text="${garden.getName()}">Garden name</h3>
+      </div>
+
+    <div class="attribute-wrapper" th:if="${isOwner}">
+      <span class="material-symbols-outlined">pin_drop</span>
+      <span th:text="${garden.getLocation()}">Default garden location</span><br>
+    </div>
+    <div class="attribute-wrapper" th:if="${!garden.getSize().isEmpty()}">
+      <span class="material-symbols-outlined">resize</span>
+      <span th:text="${garden.getSize()} + 'm&sup2'">Default garden size</span>
+    </div>
+    <div class="attribute-wrapper" th:if="${!garden.description.isEmpty()}">
+      <span class="material-symbols-outlined">description</span>
+      <span class="description" th:text="${garden.description}">Default garden description</span><br>
+    </div>
+
+    <div th:if="${isOwner}">
+      <form
+        id="updatePublicisedForm"
+        method="post"
+        th:action="@{/garden/{gardenId}/updateGardenPublicity(gardenId=${garden.id})}"
+      >
+        <span>
+          <input
+            id="publicised"
+            name="publicised"
+            onchange="submitPublicisedForm(this.checked)"
+            th:checked="${garden.publicised}"
+            type="checkbox"
+            th:disabled="${isInUse}"
+            th:text="' ' + #{message.makeMyGardenPublic}"
+          />
+          <br>
+          <span th:if="${isInUse}" th:text="#{gardenDetails.cannotChangePublicity}"></span>
+        </span>
+        <input name="gardenId" th:value="${garden.id}" type="hidden"/>
+      </form>
+    </div>
+
+    <div class="tag-box">
+      <form th:if="${isOwner}" th:action="@{/garden/{gardenId}/tag(gardenId=${garden.id})}" method="POST">
+        <label for="tag-input" th:text="#{gardenDetails.addNewTag}"></label>
+        <input id="tag-input" name="tag" type="text" th:value="${tagString}" maxlength="200" oninput="validateTag()" onfocus="removeErrorPopUp(this)" onclick="removeErrorPopUp(this)" autocomplete="off">
+        <button id="add-tag-button" type="submit" tabindex="-1">+</button>
+        <div id="autocomplete-items" class="autocomplete-tags"></div>
+        <input type="hidden" id="tagError" th:value="${tagError}">
+      </form>
+      <span th:if="${isOwner}" class="tags" th:each="tag : ${garden.getTags()}" th:text="${tag.getContent()}"></span>
+      <span th:unless="${isOwner}" class="tags" th:each="tag : ${garden.getVerifiedTags()}" th:text="${tag.getContent()}"></span>
+    </div>
+    <div th:if="${isOwner}" class="form-buttons">
+      <a
+        class="button-common link-button-green"
+        th:href="@{{id}/plant(id=${garden.id})}"
+        th:text="#{message.addNewPlant}"
+      ></a>
+      <a
+        class="button-common link-button-green"
+        th:href="@{{id}/edit(id=${garden.id})}"
+        th:text="#{message.editGarden}"
+      ></a>
+    </div>
+  </div>
+
+  <div class="halfWidth horizontal-stack flex-tile">
+    <div class="flex-tile weather-container current-weather" th:if="${currentWeather != null}">
+      <div class="weather-header">
+        <h1 th:text="${currentWeather.getDay()} + ' - ' + #{gardenDetails.today}"></h1>
+        <span th:text="${currentWeather.getDate()}"></span>
+        <h1 th:text="${currentWeather.getDescription()}"></h1>
+      </div>
+      <img alt="Weather icon" th:src="${currentWeather.getImage()}"/>
+      <div class="weather-temperatures horizontal-stack">
+        <h1
+                class="fullWidth"
+                th:each="temperature : ${currentWeather.getTemperatures()}"
+                th:text="${temperature} + '°'"
+        ></h1>
+      </div>
+      <span
+              th:text="#{gardenDetails.humidity} + ': ' + ${currentWeather.getHumidity()} + '%'"
+      ></span>
+    </div>
+    <div
+            class="flex-tile weather-container"
+            th:each="forecast : ${futureWeather}"
+            th:if="${futureWeather != null}"
+    >
+      <div class="weather-header">
+        <h1 th:text="${forecast.getDay()}"></h1>
+        <span th:text="${forecast.getDate()}"></span>
+        <h1 th:text="${forecast.getDescription()}"></h1>
+      </div>
+      <img alt="Weather icon" th:src="${forecast.getImage()}"/>
+      <div class="weather-temperatures horizontal-stack">
+        <h1
+                class="halfWidth"
+                th:each="temperature : ${forecast.getTemperatures()}"
+                th:text="${temperature} + '°'"
+        ></h1>
+      </div>
+      <span th:text="#{gardenDetails.humidity} + ': ' + ${forecast.getHumidity()} + '%'"></span>
+    </div>
+  </div>
+  <div th:if="${errorWeather} and ${isOwner}">
+    <span th:text="${errorWeather}"></span>
+  </div>
+</div>
+
+<div class="container" th:if="${responses.isEmpty()}">
+  <h1 th:text="#{gardenDetails.noPlantsMessage}"></h1>
+</div>
+
+
+<div class="card-grid">
+  <div class="card" th:each="response : ${responses}">
+    <div class="button-overlay card-content">
+      <img
+        class="contain"
+        th:src="@{${response.getImagePath()}}"
+      />
+      <form
+        enctype="multipart/form-data"
+        method="post"
+        th:action="@{{gardenId}/plant/{plantId}(gardenId=${garden.id}, plantId=${response.id})}"
+        th:if="${isOwner}"
+      >
+        <button
+          class="semi-transparent-button"
+          onclick="this.nextElementSibling.click()"
+          type="button">
+          +
+        </button>
+        <input
+          class="semi-transparent-button-listener"
+          name="image"
+          type="file"
+          style="display: none;"
+        />
+        <div class="image-size-error"></div>
+      </form>
+    </div>
+    <div class="garden-details">
+      <span class="card-content" th:text="${response.name}">Name: </span>
+      <span class="card-content" th:if="${response.count != ''}" th:text="'Count: ' + ${response.count}">Count: </span>
+      <span class="card-content" th:text="${response.displayDate}"> Date </span>
+      <span class="card-content" th:text="${response.description}"> Description </span>
+    </div>
+
+    <div class="card-content" th:if="${isOwner}" >
+      <span>
+        <a
+        class="button-common link-button-green"
+        th:href="@{${garden.id} + '/plant/' + ${response.id} + '/edit'}"
+        th:text="#{message.edit}"
+        ></a>
+      </span>
+    </div>
+
+  </div>
+</div>
+<div th:if="${fifthStrike}" class="strike-alert" id="fifth-strike-alert">
+  <p class="warning">
+    <span th:text="#{fifthStrike.alert}"></span>
+    <span th:text="#{fifthStrike.warning}"></span>
+    <span>
+      <button class="button-common link-button-green" onclick="closeAlert()"
+              th:text="#{fifthStrike.understood}">
+      </button>
+    </span>
+  </P>
+</div>
+<script th:src="@{/js/AddImage_SubmitOnUpload.js}"></script>
+<script th:src="@{/js/AutoComplete_SharedFunctions.js}"></script>
+<script th:src="@{/js/TagAutocomplete.js}"></script>
+</body>
+</html>
