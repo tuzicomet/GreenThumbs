@@ -1,0 +1,65 @@
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0");
+
+#upload-icon {
+    font-size: 10vw;
+    align-self: center;
+    font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 48
+}
+
+#remove-icon {
+    font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+}
+
+.remove-icons {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    color: red;
+    cursor: pointer;
+    font-size: 24px;
+}
+
+#imagesUpload {
+    visibility: hidden;
+    height: 0;
+    padding: 0;
+    margin: 0;
+}
+
+#imagesUpload-label {
+    display: contents;
+    cursor: pointer;
+}
+
+.uploadHolder {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+#imagesHolder {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.image-container {
+    position: relative;
+    display: inline-block;
+    flex: 0 0 45%;
+    box-sizing: border-box;
+}
+
+.image {
+    display: block;
+    max-width: 6vw;
+    margin: 0.5vw;
+}

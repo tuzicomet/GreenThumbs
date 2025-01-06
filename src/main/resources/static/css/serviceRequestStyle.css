@@ -1,0 +1,352 @@
+/* Main container holding the page contents */
+.container {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    margin: 3vh auto;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Styling for the page title header */
+.title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: bold;
+    font-size: 2em;
+}
+
+/* Container for tab buttons */
+.button-container {
+    /* use flexbox so that each of the buttons can be vertically aligned */
+    display: flex;
+    justify-content: left;
+}
+
+/* Styling for the active tab button */
+.active-tab {
+    font-size: 1em;
+    font-weight: bold;
+    padding: 0.6em 1.2em;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 0.35em 0.35em 0 0; /* only round the corners on the top */
+    cursor: pointer;
+    text-decoration: none; /* Remove default button underline */
+}
+
+/* Styling for the background tab button */
+.background-tab {
+    font-size: 1em;
+    font-weight: bold;
+    padding: 0.6em 1.2em;
+    background-color: #3f8942;
+    color: white;
+    border: none;
+    border-radius: 0.35em 0.35em 0 0; /* only round the corners on the top */
+    cursor: pointer;
+    text-decoration: none; /* Remove default button underline */
+    box-shadow: 0 0 0.4em rgba(0, 0, 0, 0.3); /* add shadow to the sides */
+}
+
+/* Styling for background-tab on hover */
+.background-tab:hover {
+    background-color: #2d8130; /* Darker shade of green for hover */
+}
+
+/* Styling for the full user list*/
+.user-list {
+    background-color: #f4f4f4;
+    border: 1px solid #ccc;
+}
+
+
+/* Styling for user profile profile pictures */
+.user-item img {
+    width: 3.25em;
+    height: 3.25em;
+    border-radius: 50%;
+    margin-right: 1em;
+
+}
+
+/* Styling for action elements in each user component */
+.actions {
+    margin-left: auto; /* pushes it to the right side */
+    display: flex; /* use flexbox so that elements inside can be vertically aligned */
+    gap: 1em; /* add spacing between each element inside */
+}
+
+/* Styling for the action element buttons */
+.action-button {
+    font-size: 1em;
+    padding: 0.5em 0.7em;
+    background-color: #1f5bc1;
+    color: white;
+    border: none;
+    border-radius: 0.35em;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 0 0.4em rgba(0, 0, 0, 0.3);
+    width: 8.3em;
+}
+
+/* Styling for the status indicator of sent friend requests */
+.status-indicator {
+    font-size: 1em;
+    padding: 0.5em 0.7em;
+    background-color: #878787;
+    color: white;
+    border: none;
+    border-radius: 0.35em;
+    text-decoration: none;
+    box-shadow: 0 0 0.4em rgba(0, 0, 0, 0.3);
+    width: 5em;
+    text-align: center;
+}
+
+/* Styling for the messages which appear when the user list is empty */
+.empty-list-message {
+    text-align: center;
+    margin: 2em;
+}
+
+/* Styling for the add friend button */
+#create-service-request {
+    margin-left: auto; /* pushes it to the right side */
+}
+
+/* Styling for the background of popup windows */
+.popup-background {
+    background-color: #0000002b;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: 2; /* Place it above everything except search modal */
+}
+
+/* styling for the search modal (the search popup) */
+.search-modal,
+.alert-modal {
+    background-color: #ffffff;
+    border-radius: 4px;
+    padding: 1.5em;
+    z-index: 3; /* Place this above everything */
+
+    /* set height to auto so it automatically scales to fit the contents */
+    height: auto;
+
+    /* Fix the modal to the centre of the screen */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* styling for the header of the popup modals */
+.modal-header {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 0.8em;
+}
+
+/* styling for the header of the search modal */
+.search-label {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #454545;
+    margin-bottom: 0.8em;
+}
+
+/* Styling for the search form */
+#search-tools form {
+    width: 25em;
+}
+
+/* Styling for the search bar input field */
+input[type="search"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 1rem;
+    margin-right: 0.3em;
+    margin-bottom: 0.8em;
+    height: 3em;
+}
+
+/* styling for the delete friend confirmation modal */
+.confirmation-modal {
+    background-color: #ffffff;
+    border-radius: 4px;
+    padding: 1.5em;
+    z-index: 3; /* Place this above everything */
+
+    /* set height to auto so it automatically scales to fit the contents */
+    height: auto;
+
+    /* Fix the modal to the centre of the screen */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* styling to apply for the entire modal button container */
+.modal-button-container {
+    float: right; /* Keep the buttons on the right  */
+}
+
+/* styling to apply for all buttons in the modal button container */
+.modal-button-container button {
+    font-size: 1em;
+    font-weight: bold;
+    height: 2.5em;
+    color: white;
+    text-decoration: none; /* Remove default button underline */
+    padding: 0.6em 1.2em;
+    margin-top: 1em;
+    margin-left: 0.1em;
+    border: none;
+    border-radius: 0.35em; /* make all corners rounded */
+    cursor: pointer;
+    box-shadow: 0 0 0.4em rgba(0, 0, 0, 0.3); /* add shadow to the sides */
+}
+
+/* styling for the modal-button-container form (which contains the confirm button) */
+.modal-button-container form {
+    /* unset the default block styling so it doesnt interrupt the other styling */
+    display: unset;
+}
+
+/* add colours to the modal buttons' backgrounds */
+.confirm-button,
+.search-button {
+    background-color: #4CAF50;
+}
+
+.confirm-button:hover,
+.search-button:hover {
+    background-color: #45a049;
+}
+
+/* Styling for the cancel button */
+.cancel-button {
+    background-color: #f44336;
+}
+
+.cancel-button:hover {
+    background-color: #d32f2f;
+}
+
+.request-description {
+    margin-top: 5px; /* Add some space between the name and description */
+}
+
+.user-item {
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    gap: 10px;
+    background-color: #fff;
+    padding: 1.5% 2%;
+    border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.15);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    transition: all 0.3s ease-in-out;
+    color: inherit;
+    text-decoration: none;
+    overflow: hidden;
+    max-width: 100%;
+    word-wrap: break-word;
+    word-break: break-word;
+    position: relative;
+}
+
+.user-item div {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.user-item div.description {
+    /* max-height: 3.5em; Set a limit to the height
+    line-height: 1.5em; Ensure proper line spacing */
+    word-wrap: break-word;
+    word-break: break-word;
+}
+
+.user-item:hover {
+    transform: scale(1.02, 1.02);
+
+}
+
+.user-item:hover::after {
+    opacity: 1;
+}
+
+.user-item span,
+.user-item div {
+    display: block;
+    margin: 3px;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 3.5em; /* Add a limit to the height */
+    line-height: 1.5em;
+}
+
+.pagination-container {
+    width: 100%;
+    padding: 10px 0;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    justify-content: center;
+}
+
+.pagination li {
+    margin: 0 5px;
+}
+
+.pagination a {
+    display: block;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #50723C;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.pagination a:hover {
+    background-color: #50723C;
+    color: #fff;
+}
+
+.pagination .active a {
+    background-color: #50723C;
+    color: #fff;
+    border-color: #50723C;
+}
+
+.error {
+    color: #ff0000;
+    text-align: center;
+    font-size: 0.9em;
+    display: block;
+    margin-bottom: 10px;
+}

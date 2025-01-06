@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title th:text="#{login.title}"></title>
+    <link th:href="@{/css/baseApplicationStyle.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/login.css}" rel="stylesheet" type="text/css"/>
+    <th:block th:insert="~{fragments/navbarLoggedOut.html :: headerfiles}"></th:block>
+
+    <!-- Scripts for showing error messages -->
+    <script th:src="@{/js/AllForms_ChangeValidityStyles.js}"></script>
+    <script th:src="@{/js/LoginForm_ValidateEmailFormat.js}"></script>
+</head>
+
+<body>
+<div>
+    <header th:insert="~{fragments/navbarLoggedOut.html :: navbar}"></header>
+</div>
+
+<div id="center-div">
+    <div class="centred-container" id="login-form-container">
+        <form id="loginform" th:action="@{/login}" method="post">
+            <!-- Blocked account message -->
+            <div th:if="${blockedMessage != null}" class="error-message">
+                <p th:text="#{blockedMesssage.text}"></p>
+            </div>
+            <div th:if="${bannedMessage != null}" class="error-message">
+                <p th:text="${bannedMessage}"></p>
+            </div>
+
+            <!-- Email label and input field -->
+            <div>
+                <span th:if="${message}" th:text="${message}" class="text"></span>
+                <span th:if="${messageExpire}" th:text="${messageExpire}" class="error"></span>
+
+                <!-- Email label and input field -->
+                <label for="email" th:text="#{label.email}"></label>
+                <input type="text" class="input-nostyle" id="email" th:name="email" th:value="${email}" maxlength="200"
+                       onfocus="removeErrorPopUp(this)" onclick="removeErrorPopUp(this)"/>
+            </div>
+
+            <!-- Password label and input field -->
+            <div>
+                <label for="password" th:text="#{label.password}"></label>
+                <input type="password" id="password" name="password" maxlength="200">
+            </div>
+
+            <!-- Error message displayed if login attempt fails -->
+            <div th:if="${error == 'badCredentials'}" class="error-message"
+                 th:text="#{login.badCredentialError}">
+            </div>
+            <div th:if="${error == 'accountDisabled'}" class="error-message"
+                 th:text="#{login.accountDisabledErrorStart} + ' ' + ${accountDisabledDate} + ' ' + #{login.accountDisabledErrorEnd}">
+            </div>
+
+            <!-- Submit and Cancel buttons -->
+            <div class="form-buttons">
+                <input type="submit" name="submit" class="button-common"
+                       th:value="#{button.signIn}"/>
+                <a id="cancel" th:href="@{/homepage}" class="button-common link-button-red"
+                   th:text="#{button.cancel}"></a>
+            </div>
+
+            <div class="links-section">
+                <!-- Link to the registration and forgot password pages -->
+                <div class="register-link">
+                    <p><a th:href="@{/register}" th:text="#{login.notRegistered}"></a></p>
+                    <p><a th:href="@{/forgot}" th:text="#{login.forgotPassword}"></a></p>
+                </div>
+            </div>
+
+            <!-- HiddenInputs to display with JavaScript if there are errors with input -->
+            <input type="hidden" id="emailError" th:value="#{error.emailFormat}">
+
+        </form>
+
+        <!-- javascript for handling Enter key presses on form text fields -->
+        <script th:src="@{/js/FormInputs_HandleEnterKey.js}"></script>
+
+        <!-- javascript to prevent input fields from clearing after unsuccessful login attempts -->
+        <script th:src="@{/js/LoginForm_PreserveFormInput.js}"></script>
+
+    </div>
+</div>
+</body>
+
+</html>

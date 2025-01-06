@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<div>
+    <label th:text="#{registrationEmail.greeting}"></label>
+    <label th:text="${name}"></label>
+    <br>
+    <label th:text="#{registrationEmail.bodyMessage}"></label>
+    <label th:text="${token}"></label>
+    <br>
+    <p th:text="#{registrationEmail.notYouMessage}"></p>
+</div>
+</body>
+
+</html>

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{serviceDetails.header}"></title>
+    <link th:href="@{/css/baseApplicationStyle.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/serviceRequestDetails.css}" rel="stylesheet">
+    <link th:href="@{/css/icons.css}" rel="stylesheet">
+    <link th:href="@{/css/starRatings.css}" rel="stylesheet">
+    <link th:href="@{/css/tooltip.css}" rel="stylesheet" type="text/css"/>
+    <script th:src="@{/js/AllForms_ChangeValidityStyles.js}"></script>
+    <script th:src="@{/js/ContractorValidateDetails.js}"></script>
+    <script th:src="@{/js/GardenForms_CharacterCount.js}"></script>
+    <script th:src="@{/js/GetContractorInformation.js}"></script>
+
+    <th:block th:insert="~{fragments/navbar.html :: headerfiles}"></th:block>
+
+</head>
+<body>
+<header th:insert="~{fragments/navbar.html :: navbar}"></header>
+<div class="container">
+    <h1 th:text="#{serviceDetails.header}"></h1>
+
+    <div class="details-container">
+        <div class="text-details">
+            <div class=".attribute-wrapper-details">
+                <p><strong th:text="#{serviceDetails.title}"></strong> <span th:text="${serviceRequest.title}"></span></p>
+            </div>
+            <div class="attribute-wrapper-details">
+                <p><strong th:text="#{serviceDetails.description}"></strong> <span th:text="${serviceRequest.description}"></span></p>
+            </div>
+            <div class="attribute-wrapper-details">
+                <p><strong th:text="#{serviceDetails.dateRange}"></strong>
+                    <span id="dateMinLabel" th:text="${#dates.format(serviceRequest.dateMin, 'dd/MM/yyyy')}"></span> -
+                    <span id="dateMaxLabel" th:text="${#dates.format(serviceRequest.dateMax, 'dd/MM/yyyy')}"></span>
+                </p>
+            </div>
+            <div class="attribute-wrapper-details">
+                <p><strong th:text="#{serviceDetails.priceRange}"></strong>
+                    $<span th:text="${serviceRequest.priceMin}"></span> -
+                    $<span th:text="${serviceRequest.priceMax}"></span>
+                </p>
+            </div>
+        </div>
+        <!--Container for the service request image-->
+        <div class="image-container">
+            <!--Image only displays if the service request has a valid image path-->
+            <img th:if="${serviceRequest.imagePath}" th:src="@{${serviceRequest.imagePath}}" th:alt="#{serviceDetails.altImage}" class="attached-image" />
+        </div>
+    </div>
+
+    <!--Edit/apply/cancel buttons.-->
+    <div class="form-buttons">
+        <!--If the user is the owner of the request, they can edit it-->
+        <a th:if="${isOwner && !isAssigned && !isExpired}" th:href="@{/serviceRequest/{id}/edit(id=${serviceRequest.id})}" class="button-common link-button-green" th:text="#{serviceDetails.editButton}"></a>
+        <button th:if="${isOwner && !isAssigned && isExpired}" th:text="#{serviceDetails.editButton}" class="button-common link-button-green" disabled></button>
+        <!--If the user is not the owner, they can apply for the request-->
+        <button th:if="${isOwner && isAssigned && !serviceRequest.isCompleted()}" class="button-common link-button-green"
+                th:text="#{serviceDetails.completeButton}" onclick="showModal('confirm-completion-modal')">></button>
+        <a th:if="${serviceRequest.isCompleted()}" class="button-common link-button-green blue-button" th:href="@{/serviceRequest/{id}/invoice(id=${serviceRequest.id})}" download th:text="#{invoice.download}">Download Invoice</a>
+        <button id="applyModalButton" th:if="${(isOwner == null || !isOwner) && !(appliedContractorsIds.contains(userId)) && !isAssigned && !serviceRequest.isCompleted()}" class="button-common link-button-green" th:text="#{serviceDetails.applyButton}" onclick="showModal('applyModal')"></button>
+        <button id="appliedButton" th:if="${(isOwner == null || !isOwner) && appliedContractorsIds.contains(userId) && !isAssignedContractor}" class="button-common disabled-button-no-sizing"  disabled="disabled" th:text="#{serviceDetails.appliedButton}" ></button>
+        <button id="congratsButton" th:if="${(isOwner == null || !isOwner) && isAssignedContractor}" class="button-common disabled-button-no-sizing"  disabled="disabled" th:text="#{serviceDetails.congrats}" ></button>
+        <!--Cancel button which will return the user to the previous page they were on-->
+        <a th:href="@{${referer}}" class="button-common link-button-red" th:text="#{serviceDetails.backButton}"></a>
+    </div>
+
+</div>
+
+<!--Assigned Contractor-->
+<div th:if="${isOwner && isAssigned}" class="container accepted-application">
+    <div class="accepted-container align-center">
+        <div class="accepted-details">
+            <div class="align-center" id="contractor-detail">
+                <img alt="image" th:src="@{${assignedContractor.getProfilePicture()}}" id="contractor-image">
+                <label  th:text="${serviceRequest.getContractor().getFormattedName()}"></label>
+
+            </div>
+            <span th:text="'$' + ${agreedPrice}"></span>
+            <span th:text="${agreedDate}"></span>
+        </div>
+        <button th:if="${serviceRequest.isRated()}" th:text="#{message.ratingConfirmation}" class="disabled-button">Rate</button>
+        <button th:if="${!serviceRequest.isRated()}" th:text="#{button.rate}" onclick="showModal('ratingModal')" class="action-button" th:disabled="${!serviceRequest.isCompleted()}">Rate</button>
+    </div>
+</div>
+
+<!--Applications Dropdown-->
+<div th:if="${isOwner && !isAssigned}">
+    <button type="button" class="collapsible container-dropdown"><h2 th:text="#{serviceDetails.applications} + ' (' + ${jobApplications.size() ?: 0} + ')'"></h2><span>></span></button>
+    <div id="container-applications" class="content container-applications">
+        <div th:each="jobApplication : ${jobApplications}">
+            <div class="container-application hover-effect">
+                <div class="attribute-wrapper">
+                    <a th:onclick="'showContractorModal(' + ${jobApplication.getContractor().getUserId()} + ')'" style="cursor: pointer">
+                        <div id="name">
+                            <span th:text="${jobApplication.getContractor().getFirstName()}"></span>
+                        </div>
+                    </a>
+                <div class="text-details">
+                    <!--    Div for stars         #-->
+                    <span th:if="${jobApplication.getContractor().getAverageRatingRounded() == null}"
+                          class="space no_interact_star grey"> ★ No ratings yet
+                        </span>
+                    <span th:if="${jobApplication.getContractor().getAverageRatingRounded() != null}"
+                          class="space no_interact_star" th:text="'★'+${jobApplication.getContractor().getAverageRatingRounded()}">
+                    </span>
+                    <span th:text="'$' + ${jobApplication.getPrice()}"></span>
+                    <span class="space" th:text="${#dates.format(jobApplication.getDateAsDate(), 'dd/MM/yyyy')}"></span>
+
+                    </div>
+                    <button class="application-button link-button-green accept"
+                            th:disabled="${serviceRequest.contractor != null}"
+                            th:text="#{button.accept}"
+                            th:data-id="${jobApplication.getId()}"
+                            th:data-name="${jobApplication.getContractor().getFirstName()}"
+                    ></button>
+                    <button class="application-button link-button-red decline"
+                            th:disabled="${serviceRequest.contractor != null}"
+                            th:text="#{button.decline}"
+                            th:data-id="${jobApplication.getId()}"
+                            th:data-name="${jobApplication.getContractor().getFirstName()}"
+                    ></button>
+                </div>
+            </div>
+        </div>
+        <div th:if="${jobApplications.size() == 0}" id="container-no-application">
+            <div class="text-details">
+                <span th:text="#{serviceDetails.noApplications}"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Has two different views, one for the owner and one for contractors as per the Figmas-->
+<div th:class="${isOwner} ? 'owner-view' : 'non-owner-view'">
+    <button th:if="${isOwner}" type="button" class="collapsible container-dropdown">
+        <h2 th:text="#{serviceDetails.QuestionsAndAnswers}"></h2>
+        <span>></span>
+    </button>
+    <!--If they're the owner, use the container-applications (dropdown) else use the normal container-->
+    <div id="QAcontent" th:class="${isOwner} ? 'content container-applications' : 'container'">
+        <h1 th:unless="${isOwner}" th:text="#{serviceDetails.QuestionsAndAnswers}"></h1>
+
+        <div class="container-questions">
+            <span th:if="${#lists.isEmpty(questionAnswerList)}" th:text="#{serviceDetails.NoQuestions}">There are currently no questions.</span>
+            <div th:unless="${#lists.isEmpty(questionAnswerList)}">
+
+                <!-- Info message section to display if there are no unanswered questions -->
+                <div th:if="${noUnansweredQuestions}"
+                     id="no-unanswered-info" th:text="#{serviceDetails.NoQuestionsUnanswered}"></div>
+
+                <div class="QA-Box" th:each="qa : ${questionAnswerList}">
+                    <!-- Question on the left with contractor's profile image -->
+                    <div class="question-format">
+                        <div>
+                            <img class="profile-image" th:src="@{${qa.getContractorImagePath()}}" alt="Contractor Avatar">
+                            <span class="question" th:text="${qa.getQuestion()}"></span>
+                        </div>
+                        <button th:if="${isOwner && !qa.hasAnswer()}" id="freakBob" class="button-common link-button-green answer-button"
+                                th:onclick="'answerQuestion(this, ' + ${qa.questionId} + ')'">Answer</button>
+                    </div>
+                    <!-- Answer on the right with the owner's profile image, displayed if an answer exists -->
+                    <div class="answer-section" th:if="${qa.hasAnswer()}">
+                        <div class="answer-box">
+                            <img class="profile-image-right" th:src="@{${qa.getOwner().getProfilePicture()}}" alt="Owner Avatar">
+                            <span class="answer" th:text="${qa.getAnswer()}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="answer-form" style="display: none;">
+            <form th:action="@{/serviceRequest/{id}/answer(id=${serviceRequest.id})}" method="post" style="display: flex; align-items: center;">
+                <input type="hidden" id="questionIdInput" name="questionId" value="">
+                <input class="question-box" id="answer" name="answer" th:value="*{answer}" th:placeholder="#{serviceDetails.AnswerQuestion}" maxlength="512"
+                       oninput="validateQuestion(this);answerCounter(512)" onfocus="removeErrorPopUp(this)" onclick="removeErrorPopUp(this)"
+                       style="resize: none; flex: 1; margin-right: 10px;">
+                <label id="answer-counter" class="char-counter" th:text="${'0'} + '/512'">0/512</label>
+                <input type="submit" th:value="#{button.submit}" class="ask-question-button button-common" style="white-space: nowrap; margin-right: 10px;" />
+                <button type="button" class="button-common link-button-red" onclick="goBackToQuestions()" th:text="#{serviceDetails.backButton}"></button>
+            </form>
+        </div>
+
+        <!--Appears at the bottom of the container as long as the user isn't the owner-->
+        <div th:if="${isOwner == null || !isOwner}" class="form-buttons">
+            <label for="question"></label>
+            <form th:action="@{/serviceRequest/{id}/question(id=${serviceRequest.id})}" method="post" id="submit-question-form">
+                <input class="question-box" id="question" type="text" th:placeholder="${placeholderText}"
+                       th:name="question" data-cy="question" th:value="*{question}" maxlength="512" style="resize: none;"
+                       oninput="validateQuestion(this);questionCounter(512)" onfocus="removeErrorPopUp(this)" onclick="removeErrorPopUp(this)"
+                       th:disabled="${hasMaxUnansweredQuestions}">
+                <label id="question-counter" class="char-counter" th:text="${question.length()} + '/512'">0/512</label>
+                <!--submit button -->
+                <input id="submit" type="submit" name="submit" th:value="#{button.askQuestion}" class="ask-question-button" th:disabled="${hasMaxUnansweredQuestions}"/>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- The Modal -->
+<div id="applyModal" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+        <form id="job-application-form" th:action="@{/serviceRequest/{id}(id=${serviceRequest.id})}" method="post">
+            <label class="modal-header" th:text="#{applicationModal.title}"></label>
+
+            <!-- Date label and field -->
+            <label for="date" th:text="#{applicationModal.Date} +'  ( ' + ${#dates.format(serviceRequest.dateMin, 'dd/MM/yyyy')} +' - '+ ${#dates.format(serviceRequest.dateMax, 'dd/MM/yyyy')} +' )'"></label>
+            <input type="text" class="form-control" id="date" name="date" maxlength="20"
+                   th:value="${date}" th:placeholder="#{placeholder.dateFormatPlaceHolder}"
+                   onfocus="removeErrorPopUp(this)" onclick='removeErrorPopUp(this)' tabindex="0">
+
+            <!-- Price label and field -->
+            <label for="price" th:text="#{applicationModal.Price} +'  ( $' + ${serviceRequest.priceMin} +' - $'+ ${serviceRequest.priceMax} +' )'"></label>
+            <div class="price-container">
+                <input type="text" class="form-control" id="price" name="price" maxlength="10"
+                       th:value="${price}" th:placeholder="#{placeholder.enterPrice}"
+                       onfocus="removeErrorPopUp(this)" onclick="removeErrorPopUp(this)" tabindex="0"
+                >
+            </div>
+
+            <!-- Submit button -->
+            <div class="form-buttons">
+                <input type="submit" name="submit" class="button-common"
+                       th:value="#{button.submit}" tabindex="0"
+                />
+                <a class="button-common link-button-red cancel"
+                   th:text="#{button.cancel}" tabindex="0">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+<!--The Rating Modal-->
+
+<div id="ratingModal" class="modal">
+    <div class="modal-content">
+        <form id="rate-contractor-form" th:action="@{/serviceRequest/{id}/rating(id=${serviceRequest.id})}" method="post">
+            <label class="modal-header" th:text="#{rateModal.header}"></label>
+
+            <!--    Div for stars         #-->
+            <div id="center-div">
+                <span onclick="changeRating(1)" class="star">★
+                </span>
+                <span onclick="changeRating(2)"
+                      class="star">★
+                </span>
+                <span onclick="changeRating(3)"
+                      class="star">★
+                </span>
+                <span onclick="changeRating(4)"
+                      class="star">★
+                </span>
+                <span onclick="changeRating(5)"
+                      class="star">★
+                </span>
+            </div>
+            <input type="hidden" id="rating" name="rating">
+            <div class="form-buttons">
+                <input type="submit" name="submit" class="button-common" id="submit-rating"
+                       th:value="#{button.submit}" disabled tabindex="0"
+                />
+                <a class="button-common link-button-red cancel" th:text="#{button.cancel}" tabindex="0">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="modal" id="accept-confirmation-modal">
+    <form th:action="@{/serviceRequest/{id}/accept(id=${serviceRequest.id})}" method="post" id="confirm-accept">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <!-- Hidden input to store the application ID -->
+            <input type="hidden" id="application-id-input" name="applicationId" value="">
+            <span class="content"></span>
+            <!-- Submit button -->
+            <div class="form-buttons">
+                <button type="submit" class="button-common" th:text="#{button.accept}" tabindex="0">
+                    Accept
+                </button>
+                <a class="button-common link-button-red cancel" th:text="#{button.cancel}" tabindex="0">
+                    Decline
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Modal for declining a job application -->
+<div class="modal" id="decline-confirmation-modal">
+    <form th:action="@{/serviceRequest/{id}/decline(id=${serviceRequest.id})}" method="post" id="confirm-decline">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <!-- Hidden input to store the application ID -->
+            <input type="hidden" id="decline-application-id" name="applicationId" value="">
+            <span class="content"></span>
+            <!-- Submit button -->
+            <div class="form-buttons">
+                <button type="submit" class="button-common" th:text="#{button.decline}">
+                    Decline
+                </button>
+                <a class="button-common link-button-red cancel" th:text="#{button.cancel}">
+                    Cancel
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!--Confirm complete service request modal-->
+<div class="modal" id="confirm-completion-modal">
+    <form th:action="@{/serviceRequest/{id}/complete(id=${serviceRequest.id})}" method="post" id="confirm-complete">
+        <div class="modal-content">
+            <label class="modal-header" th:text="#{completeModal.header}"></label>
+            <!-- Submit button -->
+            <div class="form-buttons">
+                <button type="submit" class="button-common" th:text="#{button.confirm}" tabindex="0">
+                    Confirm
+                </button>
+                <a class="button-common link-button-red cancel" th:text="#{button.cancel}" tabindex="0">
+                    Cancel
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Contractor Information Modal -->
+<div id="contractor-info-modal" class="modal">
+    <div class="modal-content">
+        <span class="close cancel" onclick="closeContractorModal()">&times;</span>
+        <div class="contractor-name-and-ratings">
+            <div class="tooltip">
+                <span id="tooltipFlairId" class="tooltiptext"></span>
+
+                <img id="contractorFlair" class="contractor-flair" th:alt="#{alt.contractorFlair}" />
+                <img id="contractorProfilePicture" alt="Profile Picture">
+            </div>
+            <section>
+                <h2 id="contractorName"></h2>
+                <p><span id="contractorNumRatings"></span></p>
+            </section>
+            <span id="star-rating" class="stars-landing" style="--rating: 0;"></span>
+        </div>
+        <p class="info-header"><strong th:text="#{contractor.aboutMe}"></strong> <span id="contractorAboutMe"></span></p>
+        <p class="info-header" id="picture-header"><strong th:text="#{myJobs.workPictures}"></strong></p>
+        <div id="contractor-work-pictures" class="image-container">
+            <!--Inject images here from JS-->
+        </div>
+    </div>
+</div>
+
+
+<script th:src="@{/js/OpenModal.js}"></script>
+
+<!-- HiddenInputs so we can use the error messages in JavaScript -->
+<input type="hidden" id="errorPrice" th:value="${errorPrice}">
+<input type="hidden" id="modalOpen" th:value="${modalOpen}">
+<input type="hidden" id="errorDate" th:value="${errorDate}">
+<input type="hidden" id="errorQuestion" th:value="${errorQuestion}">
+<input type="hidden" id="errorAnswer" th:value="${errorAnswer}">
+<input type="hidden" id="prevQuestionId" th:value="${prevQuestionId}">
+<input type="hidden" id="priceMinHidden" th:value="${serviceRequest.getPriceMin()}">
+<input type="hidden" id="priceMaxHidden" th:value="${serviceRequest.getPriceMax()}">
+<input type="hidden" id="confirm-accept-template-string" th:value="#{serviceDetails.confirmAcceptApplication}">
+<input type="hidden" id="confirm-decline-template-string" th:value="#{serviceDetails.confirmDeclineApplication}">
+
+<script th:src="@{/js/AllForms_ChangeValidityStyles.js}"></script>
+<script th:src="@{/js/ApplyServiceRequest_ValidateDetails.js}"></script>
+<script th:src="@{/js/rating.js}"></script>
+<script th:src="@{/js/QuestionsAndAnswers.js}"></script>
+<script>
+    var openModal = document.getElementById("modalOpen").value === "true"
+    var slayModal = document.getElementById("applyModal");
+    var declineModal = document.getElementById("decline-confirmation-modal");
+    if (openModal) {
+        slayModal.style.display = "block";
+    }
+
+    validateAllRequestFields();
+    showAllRequestErrors();
+</script>
+<script>
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+
+    for (i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        });
+    }
+</script>
+<script th:inline="javascript">
+    var dropdownOpen = /*[[${dropdownOpen}]]*/ false;
+
+    document.addEventListener("DOMContentLoaded", function() {
+        if (dropdownOpen) {
+            var collapsible = document.querySelectorAll('.collapsible').item(1);
+            var content = collapsible.nextElementSibling;
+
+            collapsible.classList.add('active');
+            content.style.maxHeight = content.scrollHeight + "px";
+            content.scrollIntoView({ behavior: 'smooth' });
+            setTimeout(() => window.scrollTo(0, document.body.scrollHeight), 0.3);
+        }
+        showQuestionErrorIfExists()
+    });
+    var answerOpen = /*[[${answerOpen}]]*/ false;
+    var prevQuestionId = document.getElementById("prevQuestionId")?.value;
+
+    document.addEventListener("DOMContentLoaded", function() {
+        if (answerOpen && prevQuestionId !== 0) {
+            answerQuestion(document.getElementById("freakBob"), prevQuestionId);
+        }
+        showAnswerErrorIfExists()
+    });
+</script>
+<script th:src="@{/js/Question_ValidateDetails.js}"></script>
+</body>
+</html>

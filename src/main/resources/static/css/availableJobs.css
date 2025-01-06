@@ -1,0 +1,43 @@
+.job-image {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border-radius: 30%;
+
+    /* Make the thumbnail fit the size of the parent */
+    width: 150px;
+    height: 150px;
+}
+
+/* Center the image within the frame */
+.job-image > img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+/* Make the thumbnail go to the right of the details, and be centered vertically */
+.garden-container {
+    flex-direction: row;
+    align-items: center;
+}
+
+/* Right align the thumbnail */
+.garden-info {
+    flex-grow: 1;
+}
+
+#filter-controls-container {
+    position:relative;
+}
+
+@media (max-width: 600px) {
+    .controls-container {
+        justify-content: flex-start;
+    }
+    .filter-controls {
+        margin-top: 3em;
+    }
+    .job-section {
+        margin-top: 4.8em;
+    }
+}

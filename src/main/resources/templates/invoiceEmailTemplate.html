@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<div>
+    <label th:text="#{invoiceEmail.greeting}"></label>
+    <label th:text=" ${name}"></label>
+    <br>
+    <label th:text="#{invoiceEmail.bodyMessage}"></label>
+    <br>
+    <label th:text="#{invoiceEmail.signOff}"></label>
+</div>
+</body>
+
+</html>

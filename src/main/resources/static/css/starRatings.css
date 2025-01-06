@@ -1,0 +1,25 @@
+:root {
+    --star-size: 6vw;
+    --star-color: #fff;
+    --star-background: #fc0;
+}
+
+.stars-landing {
+    --percent: calc(var(--rating) / 5 * 100%);
+    font-size: var(--star-size);
+    line-height: 1;
+    text-align:left;
+    letter-spacing:-8px;
+}
+
+.stars-landing::before {
+    content: '★★★★★';
+    letter-spacing:-4px;
+    background:
+            linear-gradient(90deg, var(--star-background) 0%, var(--star-background) var(--percent), rgba(0,0,0,1) var(--percent), rgba(0,0,0,1) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transform: translatey(6vw);
+    font-family: Times;
+    padding: 1vw;
+}

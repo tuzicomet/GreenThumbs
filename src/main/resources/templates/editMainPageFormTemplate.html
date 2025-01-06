@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="headerfiles">
+    <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+    <title>Edit Main Page Form</title>
+    <link th:href="@{/css/baseApplicationStyle.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/gardenFormStyle.css}" rel="stylesheet">
+    <th:block th:insert="~{fragments/navbar.html :: headerfiles}"></th:block>
+    <script th:src="@{/js/Garden_StatusHandler.js}"></script>
+    <script th:src="@{/js/AllForms_ChangeValidityStyles.js}"></script>
+</head>
+<body>
+    <header th:insert="~{fragments/navbar.html :: navbar}"></header>
+    <!-- container for the edit main page form -->
+    <div id="customise-main-page-form" class="centred-container">
+        <!-- Edit main page form -->
+        <form th:action="@{'/homepage/edit'}" th:method="POST" class="flex-container" id="form" enctype=multipart/form-data>
+            <!-- Form Header -->
+            <h2 th:text="#{editMainPage.title}"></h2>
+
+            <div id="option-container">
+                <span>
+                  <input
+                          id="recentGardens"
+                          name="recentGardens"
+                          onchange="submitRecentGardensForm(this.checked)"
+                          th:checked="${recentGardens}"
+                          type="checkbox"
+                          th:text="' ' + #{editMainPage.recentGardens}"
+                  />
+                </span>
+                <span>
+                  <input
+                          id="recentPlants"
+                          name="recentPlants"
+                          onchange="submitRecentPlantsForm(this.checked)"
+                          th:checked="${recentPlants}"
+                          type="checkbox"
+                          th:text="' ' +#{editMainPage.recentPlants}"
+                  />
+                </span>
+                <span>
+                  <input
+                          id="friends"
+                          name="friends"
+                          onchange="submitFriendsForm(this.checked)"
+                          th:checked="${friends}"
+                          type="checkbox"
+                          th:text="' ' + #{editMainPage.friends}"
+                  />
+                </span>
+            </div>
+
+            <div class="form-buttons">
+                <button class="button-common" type="submit" id="submit" th:text="#{button.submit}"></button>
+                <a th:href="@{${referer}}" class="button-common link-button-red" th:text="#{button.cancel}"></a>
+            </div>
+        </form>
+    </div>
+    <script th:src="@{/js/DisableSubmitOnSubmit.js}"></script>
+</body>
+</html>

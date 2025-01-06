@@ -1,0 +1,193 @@
+.header-label{
+    text-align: center;
+    font-size: 200%;
+    color: #000000;
+}
+
+/* Adjust the overall container to control the layout */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 200px;
+}
+
+/* Style for each garden container */
+.garden-container-absolute {
+    flex-direction: column;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 60%;
+    max-width: 100%;
+    margin: 20px 0;
+    align-items: stretch;
+    word-wrap: break-word;
+    display: flex;
+}
+
+/* Flex container for multiple gardens */
+.recent-gardens-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+}
+
+/* Optional: Ensure a maximum height to limit the number of visible garden containers */
+.recent-gardens-container {
+    max-height: calc(10 * 200px); /* Adjust 200px to the approximate height of one garden container */
+}
+
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 5vh;
+    width: 100%;
+  }
+  
+  .search-container form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .search-container h1 {
+    margin-bottom: 10px;
+  }
+  
+  .search-container input[type="search"] {
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    width: 300px;
+    margin-bottom: 10px;
+  }
+  
+  .search-container .search-button {
+    display: flex;
+    justify-content: center;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: calc(50% - 10px); /* Adjust width calculation */
+    padding: 4px 8px;
+    margin: 8px 5px; /* Adjust margins to fit side by side */
+    font-size: 1rem;
+    text-align: center;
+    box-sizing: border-box; /* Include padding and border in the width */
+  }
+  
+  .search-container .button-common {
+    /* padding: 8px 16px; */
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    
+    width: calc(50% - 10px); /* Adjust width calculation */
+    padding: 14px 20px;
+    margin: 8px 5px; /* Adjust margins to fit side by side */
+    font-size: 1rem;
+    text-align: center;
+    display: inline-block; /* Important for alignment */
+    box-sizing: border-box; /* Include padding and border in the width */
+  }
+  
+  .search-container .button-common:hover {
+    background-color: #45a049;
+  }
+
+  .search-form {
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 60%;
+    max-width: 100%;
+    margin: 20px 0;
+    align-items: stretch;
+    word-wrap: break-word;
+}
+
+.error-message-centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: 1.5rem;
+    text-align: center;
+}
+.autocomplete-tags {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+.autocomplete-tags div {
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid #ccc;
+    width: 100%;
+    border-radius: 4px;
+}
+.autocomplete-tags div:hover{
+    background-color: #d7d7d7;
+}
+.no-bottom-margin {
+    margin-bottom: 0 !important;
+}
+
+.pagination-container {
+    width: 100%;
+    padding: 10px 0;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    justify-content: center;
+}
+
+.pagination li {
+    margin: 0 5px;
+}
+
+.pagination a {
+    display: block;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #50723C;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+    background-color: #ffffff;
+}
+
+.pagination a:hover {
+    background-color: #50723C;
+    color: #fff;
+}
+
+.pagination .active a {
+    background-color: #50723C;
+    color: #fff;
+    border-color: #50723C;
+}

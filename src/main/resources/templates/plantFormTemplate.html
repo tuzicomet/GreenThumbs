@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+    <title th:text="#{addPlantForm.title}"></title>
+    <link th:href="@{/css/baseApplicationStyle.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/imageField.css}" rel="stylesheet">
+    <th:block th:insert="~{fragments/navbar.html :: headerfiles}"></th:block>
+    <script th:src="@{/js/AllForms_ChangeValidityStyles.js}"></script>
+    <script th:src="@{/js/Garden_ValidateDetails.js}"></script>
+    <script th:src="@{/js/User_ValidateDetails.js}"></script>
+    <script th:src="@{/js/Plant_ValidateDetails.js}"></script>
+    <script>
+        window.onload = () =>{
+            validateAllPlant();
+            showAllPlantErrors();
+        }
+    </script>
+</head>
+
+<body>
+<header th:insert="~{fragments/navbar.html :: navbar}"></header>
+
+<div id="center-div">
+    <!-- container for the create plant form -->
+    <div class="container">
+        <!-- Create plant form -->
+        <form th:action="@{plant}" method="POST" onsubmit="disableSubmitButton()" class="flex-container" id="form" enctype=multipart/form-data>
+
+            <!-- Form Header -->
+            <h2 th:text="#{addPlantForm.header}"></h2>
+
+            <!-- Name input field and label -->
+            <label for="name" th:text="#{label.nameRequired}"></label>
+            <input type="text" class="form-control" id="name" th:placeholder="#{plantForm.namePlaceholder}" maxlength="200"
+                   th:name="name" th:value="*{name}" data-cy="name" autofocus oninput="validatePlantName();removeErrorPopUp(this)" onclick="removeErrorPopUp(this)">
+
+            <!-- Plant count/amount input field and label -->
+            <label for="count" th:text="#{label.count}"></label>
+            <input type="text" class="form-control" id="count" th:placeholder="#{plantForm.countPlaceholder}" maxlength="200"
+                   th:name="count" th:value="*{count}" data-cy="count" oninput="validateCount()" onfocus="removeErrorPopUp(this)" onclick="removeErrorPopUp(this)">
+
+            <!-- Description input field and label -->
+            <label for="description" th:text="#{label.description}"></label>
+            <textarea class="form-control" id="description" th:placeholder="#{plantForm.descriptionPlaceholder}"
+                      th:name="description" th:text="*{description}" data-cy="description" maxlength="600"
+                      oninput="validateDescription('description')" onfocus="removeErrorPopUp(this)" onclick="removeErrorPopUp(this)">
+            </textarea>
+
+            <!-- Date input field and label -->
+            <label for="date" th:text="#{label.date}"></label>
+            <input type="text" class="form-control" id="date" th:placeholder="#{plantForm.datePlaceholder}"
+                   th:name="date" th:value="*{date}" data-cy="date" autofocus maxlength="10"
+                   oninput="validateDate()" onfocus="removeErrorPopUp(this)" onclick="removeErrorPopUp(this)"
+            >
+
+            <!-- Plant image section -->
+            <label for="image-select-listener" th:text="#{label.image}"></label>
+
+            <div>
+                <div class="button-overlay">
+                    <!-- Preview image -->
+                    <img class="contain" id="image-select-display" th:src="@{${imagePath}}" alt="Image of plant"/>
+                    <!-- Button for selecting the image. Clicks the hidden image input -->
+                    <button type="button" class="semi-transparent-button" onclick="document.getElementById('image-select-listener').click()">+</button>
+                </div>
+                <!-- hidden image input -->
+                <input type="file" name="image" class="semi-transparent-button-listener"
+                       id="image-select-listener" th:value="*{image}" style="display: none;" onchange="validateImage()">
+
+                <!-- hidden field to keep track of the last valid image uploaded -->
+                <input type="hidden" name="imagePath" th:value="*{imagePath}" id="imagePath">
+            </div>
+
+            <!-- Error message to display if the uploaded image is invalid -->
+            <div>
+                <h4 id="imageDynamicError"></h4>
+            </div>
+            <div th:if="${errorImage}">
+                <h4 th:text="${errorImage}"></h4>
+            </div>
+
+            <!-- Buttons to submit or cancel the create plant form -->
+            <div class="form-buttons">
+                <button class="button-common" type="submit" id="submit"
+                        th:text="#{button.submit}"></button>
+                <a class="button-common link-button-red" th:href="@{${referer}}"
+                   th:text="#{button.cancel}"></a>
+            </div>
+
+            <input type="hidden" id="nameError" th:value="${errorName}">
+            <input type="hidden" id="countError" th:value="${errorCount}">
+            <input type="hidden" id="descriptionError" th:value="${errorDescription}">
+            <input type="hidden" id="dateError" th:value="${errorDate}">
+        </form>
+    </div>
+</div>
+<script th:src="@{/js/FormInputs_HandleEnterKey.js}"></script>
+<script th:src="@{/js/AddImage_UploadOnSelect.js}"></script>
+<script th:src="@{/js/DisableSubmitOnSubmit.js}"></script>
+
+
+</body>
+
+<html>

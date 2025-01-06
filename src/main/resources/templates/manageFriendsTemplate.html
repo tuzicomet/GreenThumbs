@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{manageFriends.title}"></title>
+    <link th:href="@{/css/baseApplicationStyle.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/manageFriends.css}" rel="stylesheet" type="text/css"/>
+    <th:block th:insert="~{fragments/navbar.html :: headerfiles}"></th:block>
+
+    <!-- Scripts for toggling search tools and search parameters -->
+    <script th:src="@{/js/ManageFriends_SearchToggles.js}"></script>
+</head>
+
+<body>
+<!-- Navigation Bar -->
+<div class="navbar-container">
+    <header th:insert="~{fragments/navbar.html :: navbar}"></header>
+</div>
+
+<div id="center-div">
+    <div class="container">
+        <div class="title" th:text="#{manageFriends.header}"></div>
+        <div th:if="${errorMessage != null && !errorMessage.isEmpty()}" id="error-message" th:data-error-message="${errorMessage}"></div>
+
+        <div class="button-container">
+            <button th:classappend="${activeTab == 'friendsTab'} ? 'active-tab' : 'background-tab'"
+                    th:onclick="|window.location.href='@{/friends}'|"
+                    th:text="#{manageFriends.friendsListButton}">
+            </button>
+            <button th:classappend="${activeTab == 'pendingInvitesTab'} ? 'active-tab' : 'background-tab'"
+                    th:onclick="|window.location.href='@{/friends?pending}'|"
+                    th:text="#{manageFriends.pendingInvitesButton}">
+            </button>
+            <button th:classappend="${activeTab == 'sentRequestsTab'} ? 'active-tab' : 'background-tab'"
+                    th:onclick="|window.location.href='@{/friends?requests}'|"
+                    th:text="#{manageFriends.sentRequestsButton}">
+            </button>
+
+            <!-- Add friend button, which when clicked, is replaced by a search bar -->
+            <button id="add-friend-button"
+                    th:classappend="${activeTab == 'search'} ? 'active-tab' : 'background-tab'"
+                    onclick="toggleSearchTools()"
+                    th:text="#{manageFriends.addFriendButton}">
+            </button>
+        </div>
+
+        <!-- Each tab uses the same user-list, however the users within the list,
+        as well as the actions which can be performed, vary based on the active tab. -->
+        <div class="user-list">
+            <!-- make individual divs for each user in the list -->
+            <div class="user-item" th:each="user : ${userList}">
+                <!-- User profile picture -->
+                <img th:src="@{${user.profilePicture}}" alt="Profile Picture" />
+
+                <!-- Display the user's first and last names together with a space in-between -->
+                <!-- If on the friends tab, clicking on their name links to their profile page -->
+                <a th:if="${activeTab == 'friendsTab'}" th:href="@{'/profile/user/' + ${user.userId}}">
+                    <p th:text="${user.getFormattedName()}"></p>
+                </a>
+                <!-- If not on friends tab, then do not add the link to the name -->
+                <a th:if="${activeTab != 'friendsTab'}">
+                    <p th:text="${user.getFormattedName()}"></p>
+                </a>
+
+                <!-- Each user component will have different actions based on active tab -->
+
+                <!-- If on the friends list tab -->
+                <div th:if="${activeTab == 'friendsTab'}" class="actions">
+                    <a class="action-button" th:href="@{'/profile/' + ${user.userId}}"
+                       th:text="#{manageFriends.linkToGardens}">
+                    </a>
+
+                    <!-- Button to remove the selected user as a friend.
+                    when clicked, opens a popup asking the user to confirm -->
+                    <button class="action-button"
+                            th:onclick="'toggleUserRemovalConfirmationWindow(' + ${user.userId} + ')'"
+                            th:text="#{manageFriends.removeFriend}">
+                    </button>
+
+                    <!-- Window to confirm removing friend -->
+                    <div th:id="'remove-friend-'+${user.userId}+'-confirmation'" style="display: none;">
+                        <div class="popup-background"
+                             th:onclick="'toggleUserRemovalConfirmationWindow(' + ${user.userId} + ')'"></div>
+
+                        <div class="confirmation-modal">
+                            <div class="modal-header"
+                                 th:text="#{manageFriends.confirmRemoval}">
+                            </div>
+                            <p th:text="#{manageFriends.confirmUnfriendStarter} + ' ' +
+                                ${user.getFormattedName()} + ' ' +
+                                #{manageFriends.confirmUnfriendEnder}"></p>
+                            <div class="modal-button-container">
+                                <form th:action="@{/friends/remove}" method="POST">
+                                    <input type="hidden" th:name="userToRemoveAsFriendEmail" th:value="${user.email}">
+                                    <button class="confirm-button"
+                                            th:text="#{button.confirm}">
+                                    </button>
+                                </form>
+                                <button class="cancel-button"
+                                        th:onclick="'toggleUserRemovalConfirmationWindow(' + ${user.userId} + ')'"
+                                        th:text="#{button.cancel}">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- If on the pending invites tab -->
+                <div th:if="${activeTab == 'pendingInvitesTab'}" class="actions">
+                    <form th:action="@{/friends/accept}" method="POST">
+                        <input type="hidden" th:name="userToAcceptEmail" th:value="${user.email}">
+                        <button class="action-button" th:text="#{button.accept}"></button>
+                    </form>
+                    <form th:action="@{/friends/decline}" method="POST">
+                        <input type="hidden" th:name="userToDeclineEmail" th:value="${user.email}">
+                        <button class="action-button" th:text="#{button.decline}"></button>
+                    </form>
+                </div>
+
+                <!-- If on the sent requests tab -->
+                <div th:if="${activeTab == 'sentRequestsTab'}" class="actions">
+                    <div th:if="${statusMap.get(user) == 'PENDING'}">
+                        <form th:action="@{/friends/cancel}" method="POST">
+                            <input type="hidden" th:name="userToCancelInviteEmail" th:value="${user.email}">
+                            <button class="action-button"
+                                    th:text="#{button.cancelInvite}">
+                            </button>
+                        </form>
+                    </div>
+                    <div class="status-indicator">
+                        <!-- If status of request to user is 'DECLINED', show the declined indicator text -->
+                        <label th:if="${statusMap.get(user) == 'DECLINED'}"
+                               th:text="#{manageFriends.declinedIndicator}"></label>
+                        <!-- If status of request to user is 'PENDING', show the pending indicator text -->
+                        <label th:if="${statusMap.get(user) == 'PENDING'}"
+                               th:text="#{manageFriends.pendingIndicator}"></label>
+                    </div>
+                </div>
+
+                <!-- If on the add friend requests tab -->
+                <div th:if="${activeTab == 'search'}" class="actions">
+                    <form th:action="@{/friends/add}" method="POST">
+                        <input type="hidden" th:name="userToAddEmail" th:value="${user.email}">
+                        <button class="action-button"
+                                th:text="#{button.sendInvite}">
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Messages to display if the userList is empty, based on the active tab -->
+            <div th:if="${listIsEmpty && activeTab == 'friendsTab'}" class="empty-list-message"
+                 th:text="#{manageFriends.noFriends}">
+            </div>
+
+            <div th:if="${listIsEmpty && activeTab == 'pendingInvitesTab'}" class="empty-list-message"
+                 th:text="#{manageFriends.noPendingInvites}">
+            </div>
+
+            <div th:if="${listIsEmpty && activeTab == 'sentRequestsTab'}" class="empty-list-message"
+                 th:text="#{manageFriends.noSentRequests}">
+            </div>
+
+            <div th:if="${listIsEmpty && activeTab == 'search'}" class="empty-list-message"
+                 th:text="#{manageFriends.noUsersFound}">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Search tools which should open up after clicking the Add Friend button -->
+<div id="search-tools" style="display: none;">
+    <div class="popup-background" onclick="toggleSearchTools()"></div>
+    <div class="search-modal">
+        <div class="modal-header"
+             th:text="#{manageFriends.addFriendHeader}"></div>
+        <form th:action="@{/friends}" method="GET">
+            <div id="user-search">
+                <div class="search-label" th:text="#{manageFriends.searchLabel}"></div>
+                <input type="search" id="user-query"
+                       th:name="userQuery" th:value="${userQuery}" maxlength="200"
+                       th:placeholder="#{manageFriends.searchPlaceholder}">
+            </div>
+            <!-- Container holding the modal buttons -->
+            <div class="modal-button-container">
+                <!-- Button to submit the search form -->
+                <button class="search-button"
+                        th:text="#{button.search}"></button>
+                <!-- cancel button closes the popup -->
+                <button class="cancel-button" onclick="toggleSearchTools()"
+                        th:text="#{button.cancel}" type="button"></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Custom Alert Modal -->
+<div id="customAlert" style="display:none;">
+    <div class="popup-background"></div>
+    <div class="alert-modal">
+        <div class="modal-header">
+            <span th:text="#{manageFriends.alertHeader}"></span></div>
+        <p id="alert-message"></p>
+        <div class="modal-button-container">
+            <button class="cancel-button" onclick="closeModal()" th:text="#{button.close}"></button>
+        </div>
+    </div>
+</div>
+<script>
+    window.addEventListener('DOMContentLoaded', (event) => {
+        const errorMessageElement = document.getElementById('error-message');
+        if (errorMessageElement && errorMessageElement.dataset.errorMessage && errorMessageElement.dataset.errorMessage.trim() !== "") {
+            document.getElementById('alert-message').innerText = errorMessageElement.dataset.errorMessage;
+            document.getElementById('customAlert').style.display = 'block';
+        }
+    });
+
+    function closeModal() {
+        document.getElementById('customAlert').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>

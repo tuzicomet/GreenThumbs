@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+    <title th:text="#{myGardens.title}"></title>
+    <link th:href="@{/css/baseApplicationStyle.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/myGardensStyle.css}" rel="stylesheet">
+    <link th:href="@{/css/icons.css}" rel="stylesheet">
+    <th:block th:insert="~{fragments/navbar.html :: headerfiles}"></th:block>
+</head>
+<body>
+    <header th:insert="~{fragments/navbar.html :: navbar}"></header>
+
+    <div id="center-div">
+        <div class="container">
+            <h4 class="header-label" th:text="#{message.myGardens}"></h4>
+
+            <h5 class="" th:if="${responses.empty}" th:text="#{myGardens.emptyError}"></h5>
+
+            <div th:each="response : ${responses}" >
+                <div class="garden-container">
+                    <div class="garden-info">
+                        <div class="attribute-wrapper">
+                            <a id="name" th:href="@{{id}(id=${response.id})}">
+                                <span th:text="${response.name}">Name</span>
+                            </a>
+                            <span class="tags" th:each="tag : ${response.getTags()}" th:text="${tag.getContent()}"></span>
+                        </div>
+                        <div class="attribute-wrapper">
+                            <span class="material-symbols-outlined">pin_drop</span>
+                            <span th:text="${response.getLocation()}">Default garden location</span><br>
+                        </div>
+                        <div class="attribute-wrapper" th:if="${!response.getSize().isEmpty()}">
+                            <span class="material-symbols-outlined">resize</span>
+                            <span th:text="${response.getSize()} + 'm&sup2'">Default garden size</span>
+                        </div>
+                        <div class="attribute-wrapper" th:if="${!response.description.empty}">
+                            <span class="material-symbols-outlined">description</span>
+                            <span th:text="${response.description}">Default garden description</span><br>
+                        </div>
+                    </div>
+                    <div class="garden-icons">
+                        <span th:if="${!response.isPublicised()}" class="material-symbols-outlined">lock</span>
+                        <span th:if="${response.isPublicised()}" class="material-symbols-outlined">globe</span>
+                        <span>
+                        <a class="button-common link-button-green" id="edit"
+                           th:href="@{{id}/edit(id=${response.id})}" th:text="#{message.edit}"></a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-buttons">
+                <a class="button-common link-button-green" th:href="@{/garden}"
+                   th:text="#{myGardens.createNewGarden}"></a>
+                <a class="button-common link-button-green" th:href="@{../}"
+                   th:text="#{button.home}"></a>
+            </div>
+
+            </div>
+        </div>
+</body>
+</html>

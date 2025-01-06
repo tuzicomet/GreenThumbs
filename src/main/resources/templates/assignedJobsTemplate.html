@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title th:text="#{myJobs.title}"></title>
+    <link th:href="@{/css/baseApplicationStyle.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/serviceRequestStyle.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/myGardensStyle.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/icons.css}" rel="stylesheet">
+    <th:block th:insert="~{fragments/navbar.html :: headerfiles}"></th:block>
+</head>
+<body>
+<!-- Navigation Bar -->
+<header th:insert="~{fragments/navbar.html :: navbar}"></header>
+
+<div class="container">
+    <div class="title" th:text="#{myJobs.title}"></div>
+    <br>
+    <!--The error below is from a redirection when a user attempts to access another user's serviceRequest-->
+    <div th:if="${accessError}" class="error" role="alert">
+        <p th:text="${accessError}"></p>
+    </div>
+    <br>
+    <div class="button-container">
+        <button th:classappend="${activeTab == 'current'} ? 'active-tab' : 'background-tab'"
+                th:onclick="|window.location.href='@{/myJobs(tab='current')}'|"
+                th:text="#{myJobs.currentTab}">
+        </button>
+        <button th:classappend="${activeTab == 'history'} ? 'active-tab' : 'background-tab'"
+                th:onclick="|window.location.href='@{/myJobs(tab='history')}'|"
+                th:text="#{myJobs.historyTab}">
+        </button>
+        
+    </div>
+    <!-- For the current requests tab -->
+    <div th:if="${activeTab == 'current'}">
+        <div th:if="${jobs.size() > 0}" class="user-list">
+            <div th:each="job : ${jobs}">
+                <a th:href="@{/serviceRequest/{id}(id=${job.id})}" style="text-decoration: none; color: inherit;">
+                    <div class="garden-container">
+                        <div class="garden-info">
+                            <div class="attribute-wrapper">
+                                <h3 th:text="${job.getTitle()}">Title</h3><br>
+                            </div>
+                        <div class="attribute-wrapper">
+                            <span th:text="${job.getDescription()}"></span><br>
+                        </div>
+                        <div class="attribute-wrapper">
+                            <span th:text="#{serviceRequest.agreedPrice} + ': $' + ${job.getAgreedPrice()}"></span><br>
+                        </div>
+                        <div class="attribute-wrapper">
+                            <span th:text="#{serviceRequest.dateScheduled} + ': ' + ${job.getAgreedDateString()}"></span><br>
+                        </div>
+                    </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- For the past requests tab -->
+    <div th:if="${activeTab == 'history'}">
+        <div th:if="${jobs.size() > 0}" class="user-list">
+            <div th:each="job : ${jobs}">
+                <a th:href="@{/serviceRequest/{id}(id=${job.id})}" style="text-decoration: none; color: inherit;">
+                    <div class="garden-container">
+                        <div class="garden-info">
+                            <div class="attribute-wrapper">
+                                <h3 th:text="${job.getTitle()}">Title</h3><br>
+                            </div>
+                            <div class="attribute-wrapper">
+                                <span th:text="#{serviceRequest.agreedPrice} + ': $' + ${job.getAgreedPrice()}"></span><br>
+                            </div>
+                            <div class="attribute-wrapper">
+                                <span th:text="#{serviceRequest.dateScheduled} + ': ' + ${job.getAgreedDateString()}"></span><br>
+                            </div>
+                            <div class="attribute-wrapper">
+                                <span th:if="${job.isRated()}" th:text="${job.getRating()}">Rating</span>
+                                <span th:if="${!job.isRated()}" th:text="#{myJobs.rating} + ': ' + #{myJobs.noRating}">Rating</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Messages to display if the service list is empty, based on the active tab -->
+    <div th:if="${listIsEmpty && activeTab == 'current'}" class="empty-list-message"
+         th:text="#{myJobs.noCurrentJobs}">
+    </div>
+
+    <!-- Messages to display if the service list is empty, based on the active tab -->
+    <div th:if="${listIsEmpty && activeTab != 'current'}" class="empty-list-message"
+         th:text="#{myJobs.noPastJobs}">
+    </div>
+
+    <!-- Paginate results -->
+    <div th:if="${totalPages > 1}" class="pagination-container">
+        <ul class="pagination">
+            <li th:if="${currentPage > 0}">
+                <a th:href="@{/myJobs(tab=${activeTab}, page=0, size=${size}, sort=${#strings.arrayJoin(sort, ',')})}" th:text="#{browseGardens.first}"></a>
+            </li>
+            <li th:if="${currentPage > 0}">
+                <a th:href="@{/myJobs(tab=${activeTab}, page=${currentPage - 1}, size=${size}, sort=${#strings.arrayJoin(sort, ',')})}" th:text="#{message.previous}"></a>
+            </li>
+            <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:class="${currentPage == i} ? 'active'">
+                <a th:href="@{/myJobs(tab=${activeTab}, page=${i}, size=${size}, sort=${#strings.arrayJoin(sort, ',')})}" th:text="${i + 1}"></a>
+            </li>
+            <li th:if="${currentPage < totalPages - 1}">
+                <a th:href="@{/myJobs(tab=${activeTab}, page=${currentPage + 1}, size=${size}, sort=${#strings.arrayJoin(sort, ',')})}" th:text="#{message.next}"></a>
+            </li>
+            <li th:if="${currentPage < totalPages - 1}">
+                <a th:href="@{/myJobs(tab=${activeTab}, page=${totalPages - 1}, size=${size}, sort=${#strings.arrayJoin(sort, ',')})}" th:text="#{browseGardens.last}"></a>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

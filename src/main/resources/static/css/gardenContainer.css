@@ -1,0 +1,79 @@
+.garden-container, .error-container {
+    display: flex;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 60%;
+    max-width: 100%;
+    margin: 20px auto 20px auto;
+    align-items: stretch;
+    word-wrap: break-word;
+}
+
+.error-container {
+    background-color: #f2DFE0;
+}
+
+.garden-details {
+    min-height: 100%;
+    min-width: 55%;
+    display: inline-flex;
+    flex-direction: column;
+    row-gap: 10px;
+    justify-content: space-evenly;
+}
+
+.garden-details * {
+    text-align: left;
+    display: inline-flex;
+    flex-direction: column;
+}
+
+.garden-plants {
+    display: inline-flex;
+    align-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    flex-grow: 1;
+}
+
+.garden-tags {
+    display: inline-flex;
+    align-content: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    flex-grow: 1;
+    margin: 1%;
+}
+
+/* Rules for generating centered, rounded images */
+.garden-plants > div {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border-radius: 30%;
+
+    /* For the images */
+    width: 50px;
+    height: 50px;
+
+    /* For the overflow indicator */
+    text-align: center;
+    line-height: 50px; /* Needs to be the same as the image width/height */
+    background-color: lightgray;
+
+}
+
+.garden-plants img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+/* Stops the plants from compressing too much */
+@media (max-width: 700px) {
+    .garden-plants {
+        display: none;
+    }
+}

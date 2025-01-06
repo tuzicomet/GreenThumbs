@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title th:if="${friend == null}" th:text="#{userDetail.friendNotFoundTitle}"></title>
+    <title th:if="${friend != null}" th:text="${friend.getFirstName()}"></title>
+    <link th:href="@{/css/baseApplicationStyle.css}" rel="stylesheet">
+    <link th:href="@{/css/myGardensStyle.css}" rel="stylesheet">
+    <link th:href="@{/css/gardenContainer.css}" rel="stylesheet">
+    <th:block th:insert="~{fragments/navbar.html :: headerfiles}"></th:block>
+    <link th:href="@{/css/icons.css}" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <div class="navbar-container">
+        <header th:insert="~{fragments/navbar.html :: navbar}"></header>
+    </div>
+
+        <div class="header-label" th:if="${friend != null}" th:text="${friend.getFirstName()} + #{userDetail.headerEnder}"></div>
+
+        <div class="error-container" th:if="${error != null}">
+            <span th:text="${error}">User has no gardens yet</span> <!-- Placeholder message (if not provided by backend) -->
+        </div>
+
+        <th:block th:if="${friend != null}">
+        <div class="error-container" th:if="${friend.getOwnedGardens().isEmpty()}">
+            <span th:text="${friend.getFirstName()} + ' ' + #{userDetail.hasNoGardensYet}"></span>
+        </div>
+
+        <div class="garden-container" th:if="${!friend.getOwnedGardens().isEmpty()}"
+             th:each="garden : ${friend.getOwnedGardens()}">
+            <div class="garden-details">
+                <div class="attribute-wrapper">
+                    <a th:if="${garden.isPublicised()}" th:href="@{/garden/{id}(id=${garden.id})}" th:text="${garden.getName()}">Default garden name</a>
+                    <h3 th:if="${!garden.isPublicised()}" th:text="${garden.getName()}">Default garden name</h3>
+                    <span th:if="${!garden.isPublicised()}" class="material-symbols-outlined">lock</span>
+                    <span th:if="${garden.isPublicised()}" class="material-symbols-outlined">globe</span>
+                    <span class="tags" th:each="tag : ${garden.getVerifiedTags()}" th:text="${tag.getContent()}"></span>
+                </div>
+                <div class="attribute-wrapper">
+                    <span class="material-symbols-outlined">pin_drop</span>
+                    <span th:text="${garden.getLocation()}">Default garden location</span><br>
+                </div>
+                <div class="attribute-wrapper" th:if="${!garden.getSize().isEmpty()}">
+                    <span class="material-symbols-outlined">resize</span>
+                    <span th:text="${garden.getSize()} + 'm&sup2'">Default garden size</span>
+                </div>
+            </div>
+            <div class="garden-plants" th:if="${!garden.getPlants().isEmpty()}">
+                <div th:each="plant, iterState : ${garden.getPlants()}" th:unless="${iterState.count > 19}">
+                    <img th:src="@{${plant.getImagePath()}}" th:alt="#{alt.plantPicture}"/>
+                </div>
+                <div th:if="${garden.getPlants().size() > 19}">
+                    <span th:text="'+' + ${garden.getPlants().size() - 19}"></span>
+                </div>
+            </div>
+        </div>
+
+        </th:block>
+</body>

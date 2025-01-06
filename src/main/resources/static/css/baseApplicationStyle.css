@@ -1,0 +1,367 @@
+/* Basic setup; reset preset margins/paddings and set sitewide colours, fonts, and sizes. */
+* {
+    margin: 0;
+    padding: 0;
+    font-size: medium;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #B7CE63;
+    justify-content: center;
+    margin: 0;
+}
+
+/* green: daf7c6*/
+/*brown 705d4a*/
+
+.container {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    align-items: center;
+    margin: 5vh 5vw;
+}
+
+.centred-container {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    align-items: center;
+    margin: 25vh auto;
+}
+
+#center-div {
+    display: flex;
+    justify-content: center;
+}
+
+form {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="date"],
+input[type="file"],
+textarea,
+select {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0 35px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 1rem; /* Adjusted for consistency */
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+input[type="date"]:focus,
+textarea {
+    outline: none; /* Remove the outline when focused */
+}
+
+.hasError {
+    border: 1px dotted red !important;
+    padding-left: 10px !important;
+}
+
+.isValid {
+    border-color: green !important;
+    border-style: solid !important;
+    padding-left: 10px !important;
+}
+
+.isDefault {
+    border: 1px solid #ccc;
+}
+
+
+.button-common {
+    width: calc(50% - 10px); /* Adjust width calculation */
+    padding: 14px 20px;
+    margin: 8px 5px; /* Adjust margins to fit side by side */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    text-align: center;
+    display: inline-block; /* Important for alignment */
+    box-sizing: border-box; /* Include padding and border in the width */
+}
+
+.form-buttons {
+    display: flex; /* Use flexbox to layout buttons */
+    justify-content: space-between; /* Add space between the buttons */
+}
+
+/*green buttons, such as submit */
+
+input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+}
+{
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0 35px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 1rem; /* Adjusted for consistency */
+}
+button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+}
+
+input[type="submit"]:hover, button:hover {
+    background-color: #45a049;
+}
+
+.link-button-green {
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    text-decoration: none;
+}
+
+.link-button-green:hover {
+    background-color: #45a049; /* Darker green for hover state */
+}
+
+/*Red buttons, such as cancel (a redirect button)  */
+.link-button-red {
+    background-color: #f44336;
+    color: white;
+    text-decoration: none;
+}
+.link-button-red:hover {
+    background-color: #d32f2f;
+}
+
+
+.error {
+    color: #ff0000;
+    text-align: center;
+    font-size: 0.9em;
+    display: block;
+    margin-bottom: 10px;
+}
+
+/* styling for error messages */
+.error-message {
+    color: #ff0000;
+    text-align: center;
+}
+
+@keyframes fade-in {
+    0% {opacity: 0;}
+    100% {opacity: 100%;}
+}
+.error-popup {
+    display: block;
+    max-width: 285px;
+    position: absolute;
+    background-color: #ffffff;
+    color: #484848;
+    font-size: 0.8em;
+    padding: 7px;
+    border-radius: 5px;
+    text-align: center;
+    z-index: 1;
+    margin-top: 2px;
+    box-shadow: 1px 1px 4px grey;
+    animation: fade-in 0.1s linear;
+}
+
+.tags {
+    background-color: #654229;
+    text-align: center;
+    color: white;
+    border-radius: 16px;
+    padding: 7px;
+    width: fit-content;
+    flex-wrap: wrap;
+    display: inline-flex;
+    margin: 2px;
+}
+.char-counter {
+    display: block;
+    text-align: right;
+    font-size: 0.9em;
+    color: grey;
+    margin-top: -35px;
+}
+
+.controls-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+.filter-controls {
+    order: 2;
+    gap: 20px;
+    position: absolute;
+    z-index: 1;
+    margin-bottom: 30px;
+}
+.filter-controls.show {
+    box-shadow: 1em 1em 2em rgba(0, 0, 20, 0.1);
+    border-radius: 4px;
+}
+
+.collapsible-content.show{
+    max-height: 100%;
+}
+.sort-controls {
+    order: 1;
+}
+.budget-filter-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.budget-filter-container label {
+    font-size: 16px;
+    line-height: 1;
+    margin-top: -20px;
+}
+
+.budget-filter-container input[type="text"] {
+    width: 80px;
+    padding: 4px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.padded-label {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.distance-input {
+    width: 80px;
+}
+.date-filter-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.date-filter-container label {
+    font-size: 16px;
+    line-height: 1;
+    margin-top: -20px;
+}
+
+.date-filter-container input[type="text"] {
+    width: 118px;
+    padding: 4px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+
+.toggle-div {
+    cursor: pointer;
+    padding: 0.5em 2em;
+    outline: none;
+    transition: background-color 0.4s ease, border-radius 0.4s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    background-color: #e0e0e0;
+}
+
+.toggle-div:hover {
+    background-color: #d7d7d7;
+    border-color: #bbb;
+}
+
+.toggle-div.show{
+    box-shadow: 0 0 0;
+    border-radius: 0;
+    border: none;
+}
+
+.collapsible-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.1s ease;
+}
+.margin-label{
+    margin-bottom: 20px;
+}
+.no-margin{
+    margin: 0;
+    padding: 0;
+}
+
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+.top-padding{
+    padding-top: 30px;
+}
+
+#customise-main-page-form {
+    max-width: 40em;
+}
+
+#option-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    margin: 1em 0 1em 2em;
+}

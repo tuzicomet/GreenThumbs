@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title th:text="#{activate.title}"></title>
+    <link th:href="@{/css/baseApplicationStyle.css}" rel="stylesheet" type="text/css"/>
+    <th:block th:insert="~{fragments/navbarLoggedOut.html :: headerfiles}"></th:block>
+</head>
+<body>
+    <div class="main">
+        <header th:insert="~{fragments/navbarLoggedOut.html :: navbar}"></header>
+
+        <div class="container">
+            <br>
+            <form id="tokenForm" th:action="@{/activate}" method="post">
+                <div >
+                    <label th:text="#{activate.codeSentTo}"></label>
+                    <label th:text="${userEmail + '.'}"></label>
+                </div>
+                <br>
+                <div>
+                    <label for="token" th:text="#{activate.enterCode}"></label>
+                    <input type="text" id="token" name="token" autofocus>
+                </div>
+                <div class="form-buttons">
+                    <input type="submit" class="button-common-green" th:value="#{button.submit}">
+                </div>
+                <div th:if="${tokenError}" class="error-message">
+                    <label th:text="#{activate.tokenInvalid}"></label>
+                </div>
+
+                <!--/* Hidden input fields are used here to store the users email,
+                and a flag for whether the user should be redirected to the profile.
+                This information is stored here, so it can be passed into the post method as request parameters */-->
+                <input type="hidden" name="userEmail" th:value="${userEmail}" />
+            </form>
+        </div>
+    </div>
+</body>
+</html>

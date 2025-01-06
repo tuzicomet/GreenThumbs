@@ -1,0 +1,28 @@
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200");
+
+.material-symbols-outlined {
+    font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+}
+
+/* Lines up the icons and attributes on one line */
+.attribute-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+.attribute-wrapper h3,
+.attribute-wrapper span {
+    max-width: 75%;        /* Ensure the text does not exceed the width of the container */
+    white-space: nowrap;    /* Prevent the text from wrapping to the next line */
+    overflow: hidden;       /* Hide any overflowing text */
+    text-overflow: ellipsis;/* Display ellipsis (...) when text overflows */
+}

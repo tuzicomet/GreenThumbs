@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title th:text="#{browseGardens.title}"></title>
+    <link th:href="@{/css/gardenContainer.css}" rel="stylesheet">
+    <link th:href="@{/css/baseApplicationStyle.css}" rel="stylesheet">
+    <link th:href="@{/css/browseGardensStyle.css}" rel="stylesheet">
+    <link th:href="@{/css/icons.css}" rel="stylesheet">
+    <th:block th:insert="~{fragments/navbar.html :: headerfiles}"></th:block>
+    <script th:inline="javascript">
+        var errorNoTagMatching = /*[[#{error.noTagMatching}]]*/ 'No tag matching ';
+        var errorTagAlreadySelected= /*[[#{error.tagAlreadySelected}]]*/ 'This tag has already been selected';
+    </script>
+</head>
+<body>
+<header th:insert="~{fragments/navbar.html :: navbar}"></header>
+
+<!-- Search for Garden section-->
+<div class="search-container">
+    <form th:method="GET" class="flex-container" id="form" th:action="@{/browseGardens}">
+        <h1 th:text="#{button.search}"></h1>
+        <input type="search" id="search-gardens" name="search" th:value="${search}" maxlength="600" th:placeholder="#{placeholder.searchForAGarden}">
+        <input type="submit" th:value="#{button.search}" class="button-common">
+        <th:block th:each="tag : ${tags}">
+            <li th:text="${tag}"></li>
+        </th:block>
+        <input type="hidden" name="tagFilterString" id="chosen-tags" th:value="${tagFilterString}">
+    </form>
+</div>
+
+<!-- Filter by Tag section -->
+<div class="search-container">
+    <form id="tag-form" onsubmit="return false">
+        <label for="tag-input" th:text="#{label.filterByTags}"></label><br>
+        <input id="tag-input" class="no-bottom-margin" name="tag" type="text" maxlength="200" th:placeholder="#{placeholder.startEnteringTag}"
+               oninput="removeErrorPopUp(this)" onfocus="removeErrorPopUp(this)" onclick="removeErrorPopUp(this)" autocomplete="off">
+        <div id="autocomplete-items" class="autocomplete-tags"></div>
+    </form>
+</div>
+
+<div class="recent-gardens-container" display="flex">
+    <th:block th:if="${browseGardens}">
+        <div class="garden-container-absolute" th:each="garden, iterState : ${browseGardens}" th:unless="${iterState.count > 10}">
+            <div class="garden-details">
+                <a th:href="@{/garden/{id}(id=${garden.id})}" th:text="${garden.getName()}">Default garden name</a>
+                <div class="attribute-wrapper" th:if="${garden.getLocation()}">
+                    <span class="material-symbols-outlined">pin_drop</span>
+                    <span th:text="${garden.getLocation()}">Default garden location</span><br>
+                </div>
+                <div class="attribute-wrapper" th:if="${!garden.getSize().isEmpty()}">
+                    <span class="material-symbols-outlined">resize</span>
+                    <span th:text="${garden.getSize()} + 'm²'">Default garden size</span><br>
+                </div>
+            </div>
+            <div class="garden-tags">
+                <span class="tags" th:each="tag : ${garden.getVerifiedTags()}" th:text="${tag.getContent()}"></span>
+            </div>
+            <div class="garden-plants" th:if="${!garden.getPlants().isEmpty()}">
+                <div th:each="plant, iterState : ${garden.getPlants()}" th:unless="${iterState.count > 19}">
+                    <img th:src="@{${plant.getImagePath()}}" alt="Profile picture of plant"/>
+                </div>
+                <div th:if="${garden.getPlants().size() > 19}">
+                    <span th:text="'+' + ${garden.getPlants().size() - 19}"></span>
+                </div>
+            </div>
+        </div>
+    </th:block>
+
+    <!-- Reference: ChatGPT for assistance sorting out the pagination -->
+    <div th:if="${search != null and !search.isEmpty()}" class="pagination-container">
+        <ul class="pagination">
+            <li th:if="${currentPage >= 0}">
+               <a th:href="@{/browseGardens(page=0, search=${search}, size=${size}, sort=${#strings.arrayJoin(sort, ',')}, tagFilterString=${tagFilterString})}"
+               th:text="#{browseGardens.first}"></a>
+            </li>
+            <li th:if="${currentPage > 0}">
+                <a th:href="@{/browseGardens(page=${currentPage - 1}, search=${search}, size=${size}, sort=${#strings.arrayJoin(sort, ',')}, tagFilterString=${tagFilterString})}"
+                   th:text="#{message.previous}"></a>
+            </li>
+            <li th:each="pageNumber : ${#numbers.sequence(currentPage > 2 ? currentPage - 2 : 0, currentPage + 2 < totalPages - 1 ? currentPage + 2 : totalPages - 1)}" th:class="${currentPage == pageNumber} ? 'active'">
+                <a th:href="@{/browseGardens(page=${pageNumber}, search=${search}, size=${size}, sort=${#strings.arrayJoin(sort, ',')}, tagFilterString=${tagFilterString})}" th:text="${pageNumber + 1}"></a>
+            </li>
+            <li th:if="${currentPage < totalPages - 1}">
+                <a th:href="@{/browseGardens(page=${currentPage + 1}, search=${search}, size=${size}, sort=${#strings.arrayJoin(sort, ',')}, tagFilterString=${tagFilterString})}"
+                   th:text="#{message.next}"></a>
+            </li>
+            <li th:if="${currentPage <= totalPages - 1}">
+               <a th:href="@{/browseGardens(page=${totalPages - 1}, search=${search}, size=${size}, sort=${#strings.arrayJoin(sort, ',')}, tagFilterString=${tagFilterString})}"
+               th:text="#{browseGardens.last}"></a>
+            </li>
+        </ul>
+    </div>
+
+    <div th:if="${search != null and !search.isEmpty()}">
+        <p th:text="#{browseGardens.showingResults} + ' ' + (${currentPage * size + 1}) + ' ' + #{browseGardens.to} + ' ' + (${(currentPage * size + browseGardens.size() > totalItems) ? totalItems : currentPage * size + browseGardens.size()}) + ' ' + #{browseGardens.of} + ' ' + ${totalItems}"></p>
+    </div>
+</div>
+
+<div th:if="${message}" class="error-message-centered">
+    <p th:text="${message}"></p>
+</div>
+
+<script th:src="@{/js/AllForms_ChangeValidityStyles.js}"></script>
+<script th:src="@{/js/FormInputs_HandleEnterKey.js}"></script>
+<script th:src="@{/js/AutoComplete_SharedFunctions.js}"></script>
+<script th:src="@{/js/AddTagToFilter.js}"></script>
+<script th:src="@{/js/TagFilterAutocomplete.js}"></script>
+</body>
+</html>

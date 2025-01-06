@@ -1,0 +1,35 @@
+.form-header {
+    font-size: 20px;
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+#request-form {
+    display: flex;
+    flex-direction: column;
+}
+
+form {
+    width: 100%;
+}
+
+.price-range-container {
+    display: flex;
+    align-items: center;
+    margin: 0 0 35px; /* Restores the bottom margin removed by the dash-align thing */
+}
+
+.price-range-container .form-control {
+    flex: 1;
+    margin: 0; /* Makes sure the dash is aligned with the form controls */
+}
+
+.price-range-container .dash {
+    margin: 0 10px;
+    font-size: 1.2em;
+}
+
+.image-button {
+    background-color: #4CAF50;
+    color: white;
+}

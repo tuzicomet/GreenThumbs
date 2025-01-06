@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <!--<title th:text="#{errorPage.title}"></title>-->
+  <title th:text="#{errorPage.title}">Oh no! An Error! :(</title>
+  <link th:href="@{/css/baseApplicationStyle.css}" rel="stylesheet" type="text/css"/>
+  <link th:href="@{/css/error.css}" rel="stylesheet" type="text/css"/>
+  <th:block th:insert="~{fragments/navbar.html :: headerfiles}"></th:block>
+</head>
+<body>
+  <div>
+    <header th:insert="~{fragments/navbar.html :: navbar}"></header>
+  </div>
+  
+  <div>
+    <h1>:(</h1>
+  </div>
+  
+  <div class="info">
+    <h2 th:text="#{errorPage.problemMessage}">Oh no! We've run into some problems!</h2><br>
+    <h2>
+      <span class="link-style" th:text="#{errorPage.apologyMessage}">Sorry about that! Feel free to go back or visit our</span>
+      <a class="link" th:href="@{/}" th:text="#{errorPage.homeLink}">home page</a>.
+    </h2>
+    
+    <div class="details">
+    <div>
+      <strong th:text="#{errorPage.dateLabel}">Date: </strong> <span th:text="${timestamp}"></span>
+    </div>
+    <div>
+      <strong th:text="#{errorPage.errorLabel}">Error: </strong> <span th:text="${error}"></span>
+    </div>
+    <div>
+      <strong th:text="#{errorPage.statusLabel}">Status:&nbsp; </strong> <span th:text="${status}"></span>
+    </div>
+  </div>
+  </div>
+</body>
+</html>

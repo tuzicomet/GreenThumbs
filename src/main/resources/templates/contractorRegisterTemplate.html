@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title th:text="#{contractor.title}"></title>
+        <link th:href="@{/css/baseApplicationStyle.css}" rel="stylesheet" type="text/css"/>
+        <link th:href="@{/css/contractorRegister.css}" rel="stylesheet" type="text/css"/>
+        <th:block th:insert="~{fragments/navbar.html :: headerfiles}"></th:block>
+        <script th:src="@{/js/AllForms_ChangeValidityStyles.js}"></script>
+        <script th:src="@{/js/ContractorValidateDetails.js}"></script>
+        <script th:src="@{/js/GardenForms_CharacterCount.js}"></script>
+        <link th:href="@{/css/addressAutocomplete.css}" rel="stylesheet" type="text/css">
+        <script>
+            window.onload = () =>{
+                validateAllContractor();
+                showAllContractorErrors();
+                showLocationErrors();
+                handleLocationInputAndValidation();
+            }
+        </script>
+
+    </head>
+    <body>
+        <div>
+            <header th:insert="~{fragments/navbar.html :: navbar}"></header>
+        </div>
+    <div id="center-div">
+        <div class="container">
+            <h1 th:text="#{contractor.registrationTitle}"></h1>
+            <form th:action="@{/profile/contractor}" method="post" enctype="multipart/form-data">
+                    <!-- Description input field and label -->
+                    <label for="description" th:text="#{contractor.aboutMe}"></label>
+                    <textarea class="form-control" id="description" th:placeholder="#{contractor.descriptionPlaceHolder}"
+                              th:name="description" data-cy="description" th:text="${description}" maxlength="1024"  style="resize: none;"
+                              oninput="validateDescription('description');descriptionCounter(1024)" onfocus="removeErrorPopUp(this)" onclick="removeErrorPopUp(this)"></textarea>
+                <label id="description-counter" class="char-counter" th:text="${description.length()} + '/1024'">0/1024</label>
+
+                <!-- Location Section -->
+                <div class="autocomplete-container" id="autocomplete-container">
+                    <!-- Location input field and label -->
+                    <div class="location-suggestion-field" id="location-suggestion-field">
+                        <label id='location-label' for='location' th:text="#{label.location}"></label>
+                        <input type="text" class="form-control" id="location" th:placeholder="#{contractor.locationPlaceHolder}" maxlength="200"
+                               th:name="location" th:value="*{location}" data-cy="location"
+                               onfocus="removeErrorPopUp(this)" onclick="removeErrorPopUp(this)">
+                        <input type="hidden" id="locationError" th:value="${locationError}">
+                        <div id="autocomplete-items" class="autocomplete-items"></div>
+                    </div>
+                    <span class="validity"></span>
+
+                    <!-- Hidden fields for location -->
+                    <div class="manual-address-field" id="manual-address-field">
+                        <div class="street-group"><input type="hidden" class="form-control" id="street" th:name="street" th:value="*{street}" maxlength="200"></div>
+                        <div class="suburb-group"><input type="hidden" class="form-control" id="suburb" th:name="suburb" th:value="*{suburb}" maxlength="200"></div>
+                        <div class="city-group"><input type="hidden" class="form-control" id="city" th:name="city" th:value="*{city}" maxlength="200"></div>
+                        <div class="postcode-group"><input type="hidden" class="form-control" id="postcode" th:name="postcode" th:value="*{postcode}" maxlength="20"></div>
+                        <div class="country-group"><input type="hidden" class="form-control" id="country" th:name="country" th:value="*{country}" maxlength="200"></div>
+                    </div>
+
+                </div>
+
+                <input type="file" multiple id="validUpload" name="validUpload" class="file-upload-input" accept=".jpg, .jpeg, .png, .svg" style="display: none;"/>
+                <input th:value="${imagesPaths}" id="imagesPaths" name="imagesPath" type="hidden">
+
+                <span th:text="#{contractor.workPictures}"></span>
+                <input type="file" multiple id="imagesUpload" name="imageUpload" class="file-upload-input" />
+                <div class="uploadHolder">
+                    <label for="imagesUpload" id="imagesUpload-label" >
+                        <span id="upload-icon" class="material-symbols-outlined" onclick="removeErrorPopUp(document.getElementById('imagesUpload'));">upload</span>
+                    </label>
+                    <div id="imagesHolder">
+                        <div th:each="imagePath : ${imagesPaths}" class="image-container">
+                            <img th:src="@{${imagePath}}" class="image" alt="Image">
+                        </div>
+                    </div>
+                </div>
+                <span th:text="#{contractor.acceptType}"></span>
+
+
+
+                <div class="form-buttons">
+                    <input id="submit" type="submit" name="submit" th:value="#{button.submit}" class="button-common" />
+                    <a class="button-common link-button-red" th:href="@{${referer}}" th:text="#{button.cancel}"></a>
+                </div>
+            </form>
+
+            <input type="hidden" id="descriptionError" th:value="${errorDescription}">
+            <input id="format-error" type="hidden" th:value="${errorInvalidFileType}">
+            <input id="size-error" th:value="${errorImageTooLargeContractor}" type="hidden">
+            <input id="length-error" th:value="${errorImagesMoreThanFive}" type="hidden">
+
+            <p id="no-matches-hidden-text" th:text="#{gardenForm.noLocationSuggestions}" style="display: none;"></p>
+            <p id="attribution-starter-hidden-text" th:text="#{gardenForm.autocompleteAttributionStarter}" style="display: none;"></p>
+    <!--        //PlaceHolder for error messages i18n -->
+            <p id="image-format-error" th:text="#{error.invalidFileType}" style="display: none;"></p>
+            <p id="image-too-large-error" th:text="#{error.imageTooLargeContractor}" style="display: none;"></p>
+            <p id="image-more-than-five" th:text="#{error.moreThanFive}" style="display: none;"></p>
+
+
+            <!-- Location related scripts -->
+            <script th:src="@{/js/AutoComplete_SharedFunctions.js}"></script>
+            <script th:src="@{/js/LocationAutoComplete.js}"></script>
+            <script th:src="@{/js/LocationErrorHandler.js}"></script>
+            <script th:src="@{/js/AllForms_ChangeValidityStyles.js}"></script>
+            <script th:src="@{/js/Location_RequireAutofillAndValidate.js}"></script>
+    </div>
+    <script th:src="@{/js/Images_Display_And_Validate.js}"></script>
+    <script th:src="@{/js/Add_Remove_Icon.js}"></script><script th:src="@{/js/DisableSubmitOnSubmit.js}"></script>
+    </div>
+
+    </body>
+
+</html>

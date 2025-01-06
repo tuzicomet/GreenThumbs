@@ -1,0 +1,19 @@
+
+div {
+    margin-bottom: 10px;
+}
+
+#register-form-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+#register-form {
+    width: 50em;
+}
+
+
+
