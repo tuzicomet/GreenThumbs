@@ -64,10 +64,6 @@ gradlew bootRun
 
 By default, the application will run on local port 8080 ('http://localhost:8080')
 
-### Accessing the production instance of the application
-You can load up your preferred browser and connect to the application at
-('https://csse-seng302-team200.canterbury.ac.nz/prod/').
-
 ## How to run tests
 on Linux:
 - Unit test suite
@@ -89,10 +85,6 @@ on Windows:
 - Full suite
 >  gradlew check
 > 
-
-## Coverage and Code Smells
-We use SonarQube for code coverage and code smells.
-It is hosted at http://sonarqube.csse.canterbury.ac.nz/.
 
 If you want the coverage stats for only unit, integration, or cucumber tests (for eg.) you can run the respective tasks with IntelliJ's coverage tool.
 
