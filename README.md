@@ -158,7 +158,6 @@ spring.messages.encoding=UTF-8
 - Team Software Sprouts
 
 ## Information about included build files/scripts
-Whilst these scripts and files will not be of use until later in the course when you set up continuous integration (CI) we have included files with default behaviour, and some for reference.
 - `deployment-files-fyi/nginx/sites-available.conf`
   - Reference file showing the VMs NGINX config.
 - `deployment-files-fyi/systemd-service/production.service`
